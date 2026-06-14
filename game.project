@@ -1,0 +1,28 @@
+[bootstrap]
+main_collection = /main/main.collectionc
+
+[script]
+shared_state = 1
+
+[display]
+width = 720
+height = 1280
+high_dpi = 1
+
+[android]
+input_method = HiddenInputField
+
+[html5]
+scale_mode = stretch
+wasm_streaming = 1
+show_fullscreen_button = 0
+show_made_with_defold = 0
+
+[project]
+title = abyss
+write_log_file = 1
+dependencies#0 = https://github.com/defold/extension-poki-sdk/archive/refs/heads/main.zip
+
+[sprite]
+subpixels = 0
+

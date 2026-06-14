@@ -1,0 +1,9 @@
+name: "level_1"
+scale_along_z: 0
+embedded_instances {
+  id: "bg"
+  data: ""
+  position {
+    y: 1.0
+  }
+}

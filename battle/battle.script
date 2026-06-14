@@ -1,0 +1,59 @@
+local slot_machine = require("scr.slot_machine")
+local MN = require("scr.const.message_names")
+local IN = require("scr.const.input_names")
+
+local REEL_URLS = {
+	msg.url("reel_1#reel"),
+	msg.url("reel_2#reel"),
+	msg.url("reel_3#reel"),
+}
+
+local function apply_effects(self, effects)
+    for _, fx in ipairs(effects) do
+        if fx.type == "attack" then
+            msg.post("enemy#brain", "take_damage", { amount = fx.value })
+        elseif fx.type == "defend" then
+            msg.post("player#stats", "add_block",  { amount = fx.value })
+        elseif fx.type == "heal" then
+            msg.post("player#stats", "heal",       { amount = fx.value })
+        elseif fx.type == "gold" then
+            msg.post("game_manager#script", "add_gold", { amount = fx.value })
+        end
+
+        -- triple bonus visual feedback
+        if fx.is_triple then
+            msg.post("ui#hud", "show_triple_bonus", { symbol = fx.symbol.id })
+        end
+    end
+
+    -- after effects resolve, enemy takes its turn
+    msg.post("enemy#brain", "enemy_turn")
+end
+
+function init(self)
+	self.sm = slot_machine.new(REEL_URLS)
+	self.sm.on_spin_done = function(effects)
+		apply_effects(self, effects)
+	end
+	self.current_stop = 1 -- which reel player stops next
+end
+
+function on_input(self, action_id, action)
+	-- any tap / Space stops the next unlocked reel in order
+	if action_id == IN.STOP_REEL and action.pressed then
+		if self.sm.spinning and self.current_stop <= #REEL_URLS then
+			msg.post(REEL_URLS[self.current_stop], MN.stop_reel, {
+				reel_index = self.current_stop,
+				reply_to   = msg.url(),
+			})
+			self.current_stop = self.current_stop + 1
+		end
+	end
+end
+
+function on_message(self, message_id, message)
+	if message_id == MN.reel_stopped then
+		slot_machine.on_reel_stopped(self.sm, message)
+	end
+end
+

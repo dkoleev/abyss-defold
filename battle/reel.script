@@ -28,7 +28,6 @@ local function setup_reel(self)
     for i, id in ipairs(symbols) do
         local y = (count - i) * SYMBOL_H
         local url = msg.url(nil, id, nil)
-        print(i, " ||| ", id, " ||| ", url)
 
         self.slots[i] = {
             url        = url,

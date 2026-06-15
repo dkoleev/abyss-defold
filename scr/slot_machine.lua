@@ -1,3 +1,5 @@
+local MN = require("scr.const.message_names")
+
 local M = {}
 
 local REEL_COUNT = 3
@@ -19,7 +21,8 @@ function M.spin(self)
     self.stopped = 0
     self.spinning = true
     for _, url in ipairs(self.reels) do
-        msg.post(url, "spin")
+        print("start spin: ", url)
+        msg.post(url, MN.start_spin)
     end
 end
 
@@ -62,7 +65,7 @@ function M.evaluate(results)
             symbol    = sym,
         })
     end
-    
+
     return effects -- list of {type, value, is_triple, symbol}
 end
 

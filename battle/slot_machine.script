@@ -1,0 +1,26 @@
+local REEL_SPACING = 40 -- px between reels
+
+function init(self)
+	self.reel_urls = {}
+
+	for i = 1, 3 do
+		local x   = (i - 1) * REEL_SPACING
+		local ids = collectionfactory.create(
+			"#reel_collectionfactory",
+			vmath.vector3(x, 0, 0) -- position each reel
+		)
+
+		-- msg.post(ids[hash("/root")], "setup_reel", { child_ids = ids })
+
+		-- collectionfactory.create returns a table { [hashed_id] = hashed_id }
+		-- find the root GO of spawned collection by its id suffix
+		for hashed_id, t in pairs(ids) do
+			-- local id_str = tostring(hashed_id)
+			-- print(hashed_id, " |||| ", t)
+			-- if id_str:find("root") then
+			-- 	self.reel_urls[i] = msg.url(nil, hashed_id, "reel")
+			-- 	break
+			-- end
+		end
+	end
+end

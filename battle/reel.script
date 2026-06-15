@@ -4,9 +4,6 @@ local MN         = require("scr.const.message_names")
 local SYMBOL_H   = 32  -- px per symbol cell
 local SCROLL_SPD = 100 -- px/sec
 
-local CHILD_IDS  = { "symbol_1", "symbol_2", "symbol_3" }
-local COUNT      = #CHILD_IDS
-
 local function get_max_y(slots)
     local max_y = -math.huge
     for _, s in ipairs(slots) do
@@ -20,23 +17,38 @@ local function random_symbol()
     return pool[math.random(#pool)]
 end
 
+local function setup_reel(self)
+    local symbol_1 = go.get_id("symbol_1")
+    local symbol_2 = go.get_id("symbol_2")
+    local symbol_3 = go.get_id("symbol_3")
+
+    local symbols = {symbol_1, symbol_2, symbol_3}
+    local count = #symbols
+
+    for i, id in ipairs(symbols) do
+        local y = (count - i) * SYMBOL_H
+        local url = msg.url(nil, id, nil)
+        print(i, " ||| ", id, " ||| ", url)
+
+        self.slots[i] = {
+            url        = url,
+            sprite_url = msg.url(nil, id, "sprite"), -- reuse child_id
+            y          = y,
+            symbol     = random_symbol(),
+        }
+        go.set_position(vmath.vector3(0, y, 0), url)
+    end
+end
+
 function init(self)
     self.spinning = false
     self.locked   = false
     self.result   = nil
     self.slots    = {}
 
-    for i, id in ipairs(CHILD_IDS) do
-        local y = (COUNT - i) * SYMBOL_H
-        local url = msg.url(nil, go.get_id(id), nil)
-        self.slots[i] = {
-            url        = url,
-            sprite_url = msg.url(nil, go.get_id(id), hash("sprite")),
-            y          = y,
-            symbol     = random_symbol(),
-        }
-        go.set_position(vmath.vector3(0, y, 0), url)
-    end
+    setup_reel(self)
+    -- Don't touch children here
+    -- msg.post("#", "setup_reel") -- post to self, fires after init completes
 end
 
 function update(self, dt)
@@ -58,6 +70,10 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message)
+    -- if message_id == hash("setup_reel") then
+    --     setup_reel(self)
+    -- end
+
     if message_id == MN.start_spin then
         self.spinning = true
         self.locked   = false
@@ -67,6 +83,7 @@ function on_message(self, message_id, message)
         self.locked = true
 
         -- find slot closest to y=0 (result window)
+        -- local best_slot, best_dist = self.slots[1], math.huge
         local best_slot, best_dist = nil, math.huge
         for _, slot in ipairs(self.slots) do
             local dist = math.abs(slot.y)

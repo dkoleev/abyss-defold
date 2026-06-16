@@ -2,8 +2,6 @@ local symbol_db  = require("scr.symbol_db")
 local MN         = require("scr.const.message_names")
 local visual_settings = require("scr.settings.visual_settings")
 
-local SYMBOL_H   = 34  -- px per symbol celld
-
 local function get_max_y(slots)
     local max_y = -math.huge
     for _, s in ipairs(slots) do
@@ -26,7 +24,7 @@ local function setup_reel(self)
     local count = #symbols
 
     for i, id in ipairs(symbols) do
-        local y = (count - i) * SYMBOL_H
+        local y = (count - i) * visual_settings.slots.symbol_size
         local url = msg.url(nil, id, nil)
 
         self.slots[i] = {
@@ -36,6 +34,7 @@ local function setup_reel(self)
             symbol     = random_symbol(),
         }
         go.set_position(vmath.vector3(0, y, 0), url)
+        sprite.play_flipbook(self.slots[i].sprite_url, hash(self.slots[i].symbol.icon))
     end
 end
 
@@ -46,20 +45,18 @@ function init(self)
     self.slots    = {}
 
     setup_reel(self)
-    -- Don't touch children here
-    -- msg.post("#", "setup_reel") -- post to self, fires after init completes
 end
 
 function update(self, dt)
     if not self.spinning or self.locked then return end
 
-    local bottom_edge = -SYMBOL_H
+    local bottom_edge = -visual_settings.slots.symbol_size
 
     for _, slot in ipairs(self.slots) do
         slot.y = slot.y - visual_settings.slots.scroll_speed * dt
 
         if slot.y < bottom_edge then
-            slot.y      = get_max_y(self.slots) + SYMBOL_H
+            slot.y      = get_max_y(self.slots) + visual_settings.slots.symbol_size
             slot.symbol = random_symbol()
             sprite.play_flipbook(slot.sprite_url, hash(slot.symbol.icon))
         end
@@ -69,10 +66,6 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message)
-    -- if message_id == hash("setup_reel") then
-    --     setup_reel(self)
-    -- end
-
     if message_id == MN.start_spin then
         self.spinning = true
         self.locked   = false

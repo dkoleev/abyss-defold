@@ -1,7 +1,8 @@
 local symbol_db  = require("scr.symbol_db")
 local MN         = require("scr.const.message_names")
 
-local SYMBOL_H   = 32  -- px per symbol cell
+local SYMBOL_H   = 34  -- px per symbol celld
+-- local SYMBOLS_SPACE   = 34  -- px per symbol celld
 local SCROLL_SPD = 100 -- px/sec
 
 local function get_max_y(slots)

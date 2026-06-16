@@ -1,9 +1,8 @@
 local symbol_db  = require("scr.symbol_db")
 local MN         = require("scr.const.message_names")
+local visual_settings = require("scr.settings.visual_settings")
 
 local SYMBOL_H   = 34  -- px per symbol celld
--- local SYMBOLS_SPACE   = 34  -- px per symbol celld
-local SCROLL_SPD = 100 -- px/sec
 
 local function get_max_y(slots)
     local max_y = -math.huge
@@ -57,7 +56,7 @@ function update(self, dt)
     local bottom_edge = -SYMBOL_H
 
     for _, slot in ipairs(self.slots) do
-        slot.y = slot.y - SCROLL_SPD * dt
+        slot.y = slot.y - visual_settings.slots.scroll_speed * dt
 
         if slot.y < bottom_edge then
             slot.y      = get_max_y(self.slots) + SYMBOL_H

@@ -1,0 +1,8 @@
+animations {
+  id: "square"
+  images {
+    image: "/assets/square.png"
+  }
+  playback: PLAYBACK_NONE
+}
+extrude_borders: 2

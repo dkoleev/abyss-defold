@@ -1,11 +1,4 @@
 animations {
-  id: "pixel"
-  images {
-    image: "/assets/square.png"
-  }
-  playback: PLAYBACK_LOOP_FORWARD
-}
-animations {
   id: "shield"
   images {
     image: "/assets/symbols/symbol_green_hand.png"

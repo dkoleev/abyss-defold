@@ -21,7 +21,6 @@ function M.spin(self)
     self.stopped = 0
     self.spinning = true
     for _, url in ipairs(self.reels) do
-        print("start spin: ", url)
         msg.post(url, MN.start_spin)
     end
 end

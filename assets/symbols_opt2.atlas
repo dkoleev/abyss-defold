@@ -1,42 +1,42 @@
 animations {
   id: "shield"
   images {
-    image: "/assets/symbols/symbol_green_hand.png"
+    image: "/assets/symbols_opt2/skill_icons1.png"
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
 animations {
   id: "poison"
   images {
-    image: "/assets/symbols/symbol_green_drop.png"
+    image: "/assets/symbols_opt2/skill_icons2.png"
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
 animations {
   id: "potion"
   images {
-    image: "/assets/symbols/symbol_green_drop.png"
+    image: "/assets/symbols_opt2/skill_icons3.png"
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
 animations {
   id: "coin"
   images {
-    image: "/assets/symbols/symbol_green_eye.png"
+    image: "/assets/symbols_opt2/skill_icons4.png"
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
 animations {
   id: "dagger"
   images {
-    image: "/assets/symbols/symbol_green_sword.png"
+    image: "/assets/symbols_opt2/skill_icons5.png"
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
 animations {
   id: "skull"
   images {
-    image: "/assets/symbols/symbol_green_foot.png"
+    image: "/assets/symbols_opt2/skill_icons6.png"
   }
   playback: PLAYBACK_LOOP_FORWARD
 }

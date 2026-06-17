@@ -34,7 +34,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"reel_collectionfactory\"\n"
   "  type: \"collectionfactory\"\n"
-  "  data: \"prototype: \\\"/battle/reel.collection\\\"\\n"
+  "  data: \"prototype: \\\"/battle/reel_opt2.collection\\\"\\n"
   "\"\n"
   "}\n"
   ""

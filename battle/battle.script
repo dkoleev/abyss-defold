@@ -53,9 +53,16 @@ function on_input(self, action_id, action)
 	-- end
 end
 
-function on_message(self, message_id, message)
+function on_message(self, message_id, message, sender)
 	-- if message_id == MN.reel_stopped then
 	-- 	slot_machine.on_reel_stopped(self.sm, message)
 	-- end
+
+	model.on_message(message_id, message, sender)
+end
+
+
+function on_message(self, message_id, message)
+
 end
 

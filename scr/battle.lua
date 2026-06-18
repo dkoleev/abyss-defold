@@ -1,10 +1,19 @@
 local settings = require("scr.settings.game_settings")
+local proxy_loader = require("scr.utils.proxy_loader")
 
 local M = {}
 
 function M.init()
     M.current_damned = nil
     M.spawn_damned()
+
+    proxy_loader.load(settings.levels.level_0.factory_url, {
+		enable = true,
+		acquire_input = true,
+		on_loaded = function (url)
+			print(tostring(url) .. " was loaded.")
+		end
+	})
 end
 
 function M.spawn_damned()
@@ -24,6 +33,10 @@ function M.spawn_damned()
     --         print("Failed to load prototype:", damned_config.url)
     --     end
     -- end)
+end
+
+function M.on_message(message_id, message, sender)
+    proxy_loader.on_message(message_id, message, sender)
 end
 
 return M

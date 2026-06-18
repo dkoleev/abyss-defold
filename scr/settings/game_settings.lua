@@ -6,6 +6,12 @@ M.battle = {
     damned_factory_url = "/factories#damned_factory"
 }
 
+M.levels = {
+    level_0 = {
+        factory_url = "/factories#level_1_collectionproxy"
+    }
+}
+
 M.damned_spawn_pool = {
     const.damned.demon_eye,
     const.damned.plague_fly,

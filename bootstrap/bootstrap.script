@@ -1,28 +1,24 @@
 local MN = require("scr.const.message_names")
+local proxy_loader = require("scr.utils.proxy_loader")
 
-local battle_collection_proxy_url = "/prorixes#battle_collectionproxy"
-
-local function load_collection_proxy(url)
-	msg.post(url, MN.load)
-end
+local battle_collection_proxy_url = "/proxies#battle_collectionproxy"
 
 function init(self)
 	math.randomseed(socket.gettime())
 
-	print("start loading")
 	-- save_system.load()
 
-	msg.post(battle_collection_proxy_url, MN.acquire_input_focus)
-	load_collection_proxy(battle_collection_proxy_url)
+	proxy_loader.load(battle_collection_proxy_url, {
+		enable = true,
+		acquire_input = true,
+		on_loaded = function (url)
+			print(tostring(url) .. " was loaded.")
+		end
+	})
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == MN.proxy_loaded then
-		print(tostring(sender) .. " was loaded.")
-		local absolute_location_proxy_url = msg.url(battle_collection_proxy_url)
-		-- state.current_location_proxy_url = absolute_location_proxy_url;
-		msg.post(sender, "enable")
-	end
+	proxy_loader.on_message(message_id, message, sender)
 
 	-- if message_id == EM.window_focus_lost then
 	-- 	save_system.save() -- critical for HTML5 tab switching

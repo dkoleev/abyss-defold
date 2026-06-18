@@ -1,28 +1,28 @@
 animations {
   id: "bg"
   images {
-    image: "/assets/backgrounds/hell_bg/Background layer.png"
+    image: "/assets/backgrounds/hell/Background layer.png"
   }
   playback: PLAYBACK_NONE
 }
 animations {
   id: "back"
   images {
-    image: "/assets/backgrounds/hell_bg/back layer.png"
+    image: "/assets/backgrounds/hell/back layer.png"
   }
   playback: PLAYBACK_NONE
 }
 animations {
   id: "middle"
   images {
-    image: "/assets/backgrounds/hell_bg/middle layer.png"
+    image: "/assets/backgrounds/hell/middle layer.png"
   }
   playback: PLAYBACK_NONE
 }
 animations {
   id: "front"
   images {
-    image: "/assets/backgrounds/hell_bg/front layer.png"
+    image: "/assets/backgrounds/hell/front layer.png"
   }
   playback: PLAYBACK_NONE
 }

@@ -4,7 +4,7 @@ instances {
   prototype: "/objects/fire/fire.go"
   position {
     y: -106.0
-    z: -0.72
+    z: -0.71
   }
 }
 scale_along_z: 0

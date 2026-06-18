@@ -1,7 +1,7 @@
 tile_set: "/levels/level_1/level_1.tilesource"
 layers {
   id: "env_back"
-  z: -0.71
+  z: -0.72
   is_visible: 1
   cell {
     x: 8
@@ -2203,12 +2203,20 @@ layers {
 }
 layers {
   id: "env_front"
-  z: -0.69
+  z: -0.68
   is_visible: 1
   cell {
     x: 10
     y: 8
     tile: 128
+    h_flip: 0
+    v_flip: 0
+    rotate90: 0
+  }
+  cell {
+    x: 15
+    y: 8
+    tile: 145
     h_flip: 0
     v_flip: 0
     rotate90: 0

@@ -43,8 +43,8 @@
     ],
     "project": "abyss.tiled-project",
     "recentFiles": [
-        "hell_bg.tsx",
         "hell.tsx",
+        "hell_bg.tsx",
         "level_1.tmx",
         "C:/Users/Dmitry/repositories/defold/abyss-defold/assets/untitled.tmx"
     ],

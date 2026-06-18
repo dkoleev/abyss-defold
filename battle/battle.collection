@@ -11,6 +11,14 @@ instances {
     }
   }
 }
+instances {
+  id: "skull"
+  prototype: "/battle/damned/skull/skull.go"
+  position {
+    x: -3.405152
+    y: 30.38548
+  }
+}
 collection_instances {
   id: "level_1"
   collection: "/levels/level_1/level_1.collection"

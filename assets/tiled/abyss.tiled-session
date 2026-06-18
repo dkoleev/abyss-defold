@@ -1,33 +1,53 @@
 {
-    "activeFile": "hell.tsx",
+    "activeFile": "level_1.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "hell.tsx": {
-            "scaleInDock": 1,
-            "scaleInEditor": 1
-        },
-        "level_1.tmx": {
-            "scale": 1,
+        "C:/Users/Dmitry/repositories/defold/abyss-defold/assets/untitled.tmx": {
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 470.5,
-                "y": 451
+                "x": 590.6666666666666,
+                "y": 484.66666666666663
+            }
+        },
+        "hell.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1.5,
+            "scaleInEditor": 3
+        },
+        "hell_bg.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.5,
+            "scaleInEditor": 0.5
+        },
+        "level_1.tmx": {
+            "scale": 2,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 440.75,
+                "y": 283.25
             }
         }
     },
-    "last.imagePath": "C:/repos/defold/abyss/assets/backgrounds/hell_bg",
+    "last.exportedFilePath": "C:/Users/Dmitry/repositories/defold/abyss-defold/levels/level_1",
+    "last.imagePath": "C:/Users/Dmitry/repositories/defold/abyss-defold/assets/backgrounds/hell_bg",
+    "map.lastUsedExportFilter": "Defold Tile Map (*.tilemap)",
     "map.lastUsedFormat": "tmx",
     "openFiles": [
+        "level_1.tmx",
         "hell.tsx",
-        "level_1.tmx"
+        "hell_bg.tsx"
     ],
     "project": "abyss.tiled-project",
     "recentFiles": [
+        "hell_bg.tsx",
+        "hell.tsx",
         "level_1.tmx",
-        "hell.tsx"
+        "C:/Users/Dmitry/repositories/defold/abyss-defold/assets/untitled.tmx"
     ],
-    "tileset.lastUsedFormat": "tsx"
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
 }

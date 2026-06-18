@@ -80,3 +80,15 @@ embedded_instances {
     z: 0.1
   }
 }
+embedded_instances {
+  id: "tilemap"
+  data: "components {\n"
+  "  id: \"level_1\"\n"
+  "  component: \"/levels/level_1/level_1.tilemap\"\n"
+  "}\n"
+  ""
+  position {
+    x: -471.0
+    y: -380.0
+  }
+}

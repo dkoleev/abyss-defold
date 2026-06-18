@@ -1,6 +1,7 @@
 local slot_machine = require("scr.slot_machine")
 local MN = require("scr.const.message_names")
 local IN = require("scr.const.input_names")
+local model = require("scr.battle")
 
 local REEL_URLS = {
 	msg.url("reel_1#reel"),
@@ -31,6 +32,7 @@ local function apply_effects(self, effects)
 end
 
 function init(self)
+	model.init()
 	-- self.sm = slot_machine.new(REEL_URLS)
 	-- self.sm.on_spin_done = function(effects)
 	-- 	apply_effects(self, effects)

@@ -1,1 +1,0 @@
--- apply combat result to player/enemy

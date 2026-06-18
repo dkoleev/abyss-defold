@@ -19,6 +19,22 @@ instances {
     y: 30.38548
   }
 }
+instances {
+  id: "plague_fly"
+  prototype: "/battle/damned/plague_fly/plague_fly.go"
+  position {
+    x: 36.97492
+    y: 28.280703
+  }
+}
+instances {
+  id: "demon_eye"
+  prototype: "/battle/damned/demon_eye/demon_eye.go"
+  position {
+    x: -53.779266
+    y: 11.087286
+  }
+}
 collection_instances {
   id: "level_1"
   collection: "/levels/level_1/level_1.collection"

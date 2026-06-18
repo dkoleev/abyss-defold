@@ -1,4 +1,12 @@
 name: "level_1"
+instances {
+  id: "fire"
+  prototype: "/objects/fire/fire.go"
+  position {
+    y: -106.0
+    z: -0.72
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "bg"
@@ -91,4 +99,9 @@ embedded_instances {
     x: -471.0
     y: -380.0
   }
+}
+embedded_instances {
+  id: "env"
+  children: "fire"
+  data: ""
 }

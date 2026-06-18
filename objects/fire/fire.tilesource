@@ -1,0 +1,11 @@
+image: "/assets/env/fire/Fire sheet.png"
+tile_width: 32
+tile_height: 32
+collision_groups: "default"
+animations {
+  id: "idle"
+  start_tile: 1
+  end_tile: 6
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+}

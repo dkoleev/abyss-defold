@@ -1,17 +1,17 @@
-image: "/assets/damned/Burning Skull.png"
-tile_width: 64
-tile_height: 64
+image: "/assets/damned/Plague Flies.png"
+tile_width: 32
+tile_height: 32
 collision_groups: "default"
 animations {
   id: "death"
-  start_tile: 8
-  end_tile: 14
-  fps: 8
+  start_tile: 6
+  end_tile: 10
+  fps: 10
 }
 animations {
   id: "idle"
   start_tile: 1
-  end_tile: 5
+  end_tile: 4
   playback: PLAYBACK_LOOP_FORWARD
   fps: 8
 }

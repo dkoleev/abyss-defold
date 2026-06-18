@@ -1,0 +1,29 @@
+animations {
+  id: "bg"
+  images {
+    image: "/assets/backgrounds/hell_bg/Background layer.png"
+  }
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "back"
+  images {
+    image: "/assets/backgrounds/hell_bg/back layer.png"
+  }
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "middle"
+  images {
+    image: "/assets/backgrounds/hell_bg/middle layer.png"
+  }
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "front"
+  images {
+    image: "/assets/backgrounds/hell_bg/front layer.png"
+  }
+  playback: PLAYBACK_NONE
+}
+extrude_borders: 2

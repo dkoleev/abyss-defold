@@ -27,6 +27,7 @@ embedded_instances {
 embedded_instances {
   id: "slot_machine"
   children: "bg"
+  children: "rings_root"
   data: "components {\n"
   "  id: \"slot_machine\"\n"
   "  component: \"/battle/slot_machine.script\"\n"
@@ -34,7 +35,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"reel_collectionfactory\"\n"
   "  type: \"collectionfactory\"\n"
-  "  data: \"prototype: \\\"/battle/reel_opt2.collection\\\"\\n"
+  "  data: \"prototype: \\\"/battle/reel_opt3.collection\\\"\\n"
   "\"\n"
   "}\n"
   ""
@@ -139,4 +140,28 @@ embedded_instances {
   "\"\n"
   "}\n"
   ""
+}
+embedded_instances {
+  id: "rings_root"
+  data: "embedded_components {\n"
+  "  id: \"sprite\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"coin\\\"\\n"
+  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "size {\\n"
+  "  x: 32.0\\n"
+  "  y: 32.0\\n"
+  "}\\n"
+  "size_mode: SIZE_MODE_MANUAL\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/assets/symbols_opt2.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    y: -33.0
+    z: 0.1
+  }
 }

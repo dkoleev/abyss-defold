@@ -1,0 +1,43 @@
+animations {
+  id: "shield"
+  images {
+    image: "/assets/symbols_opt3/sample (3).png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
+  id: "poison"
+  images {
+    image: "/assets/symbols_opt3/sample (1).png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
+  id: "potion"
+  images {
+    image: "/assets/symbols_opt3/sprite-1-1.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
+  id: "coin"
+  images {
+    image: "/assets/symbols_opt3/sample (2).png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
+  id: "dagger"
+  images {
+    image: "/assets/symbols_opt3/free-s22e.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
+  id: "skull"
+  images {
+    image: "/assets/symbols_opt3/sprite-1-4.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+extrude_borders: 2

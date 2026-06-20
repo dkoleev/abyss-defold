@@ -1,3 +1,7 @@
+components {
+  id: "damned"
+  component: "/battle/damned/damned.script"
+}
 embedded_components {
   id: "sprite"
   type: "sprite"

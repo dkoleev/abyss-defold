@@ -1,6 +1,6 @@
-local symbol_db  = require("scr.symbol_db")
 local MN         = require("scr.const.message_names")
 local visual_settings = require("scr.settings.visual_settings")
+local settings = require("scr.settings.game_settings")
 
 local function get_max_y(slots)
     local max_y = -math.huge
@@ -11,7 +11,7 @@ local function get_max_y(slots)
 end
 
 local function random_symbol()
-    local pool = symbol_db.player_pool
+    local pool = settings.symbols_spawn_pool
     return pool[math.random(#pool)]
 end
 

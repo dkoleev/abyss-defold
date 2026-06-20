@@ -1,0 +1,34 @@
+local model_prototype = require("scr.damned")
+local message_names = require("scr.const.message_names")
+
+go.property("config_id", hash(""))
+
+function init(self)
+	self.model = model_prototype.new(self.config_id)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == message_names.apply_effect then
+		self.model:apply_effect(message.effect, message.value)
+
+		if self.model.is_dead then
+			go.delete()
+		else
+			go.animate(".", 
+			"scale", 
+			go.PLAYBACK_ONCE_PINGPONG,
+			vmath.vector3(1.1), go.EASING_INBACK, 1)
+		end
+	end
+	-- if message_id == message_names.take_damage then
+	-- 	self.model:take_damage(message.amount)
+
+	-- 	if self.model.is_dead then
+	-- 		go.delete()
+	-- 	else
+	-- 		sprite.play_flipbook(msg.url("#sprite"), hash("get_damage"), function ()
+				
+	-- 		end)
+	-- 	end
+	-- end
+end

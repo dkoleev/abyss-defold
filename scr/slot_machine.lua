@@ -39,33 +39,57 @@ function M.on_reel_stopped(self, message)
     end
 end
 
--- Evaluate result table → outcome
 function M.evaluate(results)
     local counts = {}
     for _, sym in ipairs(results) do
         counts[sym.id] = (counts[sym.id] or 0) + 1
     end
 
-    local effects = {}
-    for id, count in pairs(counts) do
-        local sym = results[1] -- grab a reference for type/value
-        -- find first matching symbol for data
-        for _, s in ipairs(results) do
-            if s.id == id then
-                sym = s; break
-            end
-        end
-
-        local multiplier = (count == REEL_COUNT) and 2 or 1 -- triple = bonus
-        table.insert(effects, {
-            type      = sym.type,
-            value     = sym.value * count * multiplier,
-            is_triple = (count == REEL_COUNT),
-            symbol    = sym,
+    local symbol_apply_data = {}
+    for reel_index, symbol in ipairs(results) do
+        local is_triple = counts[symbol.id] == REEL_COUNT;
+        local multiplier = is_triple and 2 or 1 -- triple = bonus
+        table.insert(symbol_apply_data, {
+            reel_index = reel_index,
+            type       = symbol.type,
+            value      = symbol.value * multiplier,
+            effect_id  = symbol.effect_id,
+            is_triple  = is_triple,
+            symbol     = symbol,
         })
     end
 
-    return effects -- list of {type, value, is_triple, symbol}
+    return symbol_apply_data
 end
+
+-- Evaluate result table → outcome
+-- function M.evaluate(results)
+--     local counts = {}
+--     for _, sym in ipairs(results) do
+--         counts[sym.id] = (counts[sym.id] or 0) + 1
+--     end
+
+--     local effects = {}
+--     for id, count in pairs(counts) do
+--         local sym = results[1] -- grab a reference for type/value
+--         -- find first matching symbol for data
+--         for _, s in ipairs(results) do
+--             if s.id == id then
+--                 sym = s; break
+--             end
+--         end
+
+--         local multiplier = (count == REEL_COUNT) and 2 or 1 -- triple = bonus
+--         table.insert(effects, {
+--             type      = sym.type,
+--             value     = sym.value * count * multiplier,
+--             effect_id = sym.effect_id,
+--             is_triple = (count == REEL_COUNT),
+--             symbol    = sym,
+--         })
+--     end
+
+--     return effects -- list of {type, value, is_triple, symbol}
+-- end
 
 return M

@@ -7,32 +7,33 @@ local M = {}
 local REEL_COUNT = 3
 
 local function apply_symbols(self, symbols_apply_data, index)
-	-- Start at the first symbol if no index is provided
-	index = index or 1
+    -- Start at the first symbol if no index is provided
+    index = index or 1
 
-	-- Base case: if we've processed all symbols, stop
-	if index > #symbols_apply_data then
-		return
-	end
+    -- Base case: if we've processed all symbols, stop
+    if index > #symbols_apply_data then
+        return
+    end
 
-	local symbol = symbols_apply_data[index]
+    local symbol = symbols_apply_data[index]
 
-	-- Apply the current symbol effect
-	msg.post(battle.current_damned, MN.apply_effect, {
-		effect = symbol.effect_id,
-		value = symbol.value
-	})
+    -- Apply the current symbol effect
+    msg.post(battle.current_damned, MN.apply_effect, {
+        effect = symbol.effect_id,
+        value = symbol.value
+    })
 
-	local effect_config = settings.effects[symbol.effect_id]
+    local effect_config = settings.effects[symbol.effect_id]
 
-	timer.delay(effect_config.duration, false, function()
-		-- Pass self to maintain context if needed
-		apply_symbols(self, symbols_apply_data, index + 1)
-	end)
+    timer.delay(effect_config.duration, false, function()
+        -- Pass self to maintain context if needed
+        apply_symbols(self, symbols_apply_data, index + 1)
+    end)
 end
 
 function M.new(reel_urls)
     local sm = {
+        url          = msg.url(),
         reels        = reel_urls, -- array of reel GO urls
         results      = {},        -- filled as reels stop
         stopped      = 0,
@@ -60,9 +61,8 @@ function M.on_reel_stopped(self, message)
     if self.stopped == #self.reels then
         self.spinning = false
         local outcome = M.evaluate(self.results)
+        battle.apply_slot_machine_symbols(outcome)
         if self.on_spin_done then
-            battle.apply_slot_machine_symbols(outcome)
-            -- apply_symbols(self, outcome)
             self.on_spin_done(outcome)
         end
     end

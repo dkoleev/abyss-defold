@@ -51,12 +51,15 @@ local function spawn_damned()
     return damned_url
 end
 
-local function apply_symbols(self, symbols_apply_data, index)
+local function apply_symbols(self, symbols_apply_data, index, on_complete)
     -- Start at the first symbol if no index is provided
     index = index or 1
 
     -- Base case: if we've processed all symbols, stop
     if index > #symbols_apply_data then
+        if on_complete then
+            on_complete()
+        end
         return
     end
 
@@ -72,7 +75,7 @@ local function apply_symbols(self, symbols_apply_data, index)
 
     timer.delay(effect_config.duration, false, function()
         -- Pass self to maintain context if needed
-        apply_symbols(self, symbols_apply_data, index + 1)
+        apply_symbols(self, symbols_apply_data, index + 1, on_complete)
     end)
 end
 
@@ -98,8 +101,18 @@ handlers[STATES.SPIN] = function(self)
 end
 
 handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
-    apply_symbols(self, outcome)
+    apply_symbols(self, outcome, 1, function ()
+        transition(STATES.DAMNED_ATTACK, self)
+    end)
 end
+
+handlers[STATES.DAMNED_ATTACK] = function (self)
+    timer.delay(2.0, false, function ()
+        print(self)
+        transition(STATES.SPIN, self)
+    end)    
+end
+
 
 --===== PUBLIC API ==================================
 --===================================================

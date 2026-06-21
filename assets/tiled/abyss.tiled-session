@@ -5,30 +5,19 @@
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "C:/Users/Dmitry/repositories/defold/abyss-defold/assets/untitled.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": 590.6666666666666,
-                "y": 484.66666666666663
-            }
-        },
         "hell.tsx": {
-            "dynamicWrapping": false,
-            "scaleInDock": 1.5,
-            "scaleInEditor": 3
+            "scaleInDock": 1,
+            "scaleInEditor": 2
         },
         "hell_bg.tsx": {
-            "dynamicWrapping": true,
-            "scaleInDock": 0.5,
-            "scaleInEditor": 0.5
+            "scaleInDock": 1
         },
         "level_1.tmx": {
-            "scale": 2,
-            "selectedLayer": 4,
+            "scale": 0.75,
+            "selectedLayer": -1,
             "viewCenter": {
-                "x": 440.75,
-                "y": 283.25
+                "x": 490,
+                "y": 202.66666666666669
             }
         }
     },

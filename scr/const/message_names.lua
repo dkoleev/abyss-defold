@@ -61,7 +61,7 @@ M.release_camera_focus   = hash("release_camera_focus")
 
 -- ─── Game Custom ──────────────────────────────────────────────────────────────
 M.take_damage            = hash("take_damage")
-M.kill                   = hash("kill")
+M.dead                   = hash("dead")
 M.enter_fight            = hash("enter_fight")
 M.exit_fight             = hash("exit_fight")
 M.attack                 = hash("attack")

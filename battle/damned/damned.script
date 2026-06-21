@@ -1,23 +1,14 @@
-local model_prototype = require("scr.damned")
 local message_names = require("scr.const.message_names")
 
-go.property("config_id", hash(""))
-
-function init(self)
-	self.model = model_prototype.new(self.config_id)
-end
-
 function on_message(self, message_id, message, sender)
-	if message_id == message_names.apply_effect then
-		self.model:apply_effect(message.effect, message.value)
+	if message_id == message_names.dead then
+		go.delete()
+	end
 
-		if self.model.is_dead then
-			go.delete()
-		else
-			go.animate(".", 
-			"scale", 
+	if message_id == message_names.take_damage then
+		go.animate(".",
+			"scale",
 			go.PLAYBACK_ONCE_PINGPONG,
 			vmath.vector3(0.5), go.EASING_INBACK, 0.5)
-		end
 	end
 end

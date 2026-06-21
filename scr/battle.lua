@@ -1,5 +1,6 @@
 local player                 = require("scr.player")
 local slot_machine_prototype = require("scr.slot_machine")
+local damned_prototype       = require("scr.damned")
 local MN                     = require("scr.const.message_names")
 local settings               = require("scr.settings.game_settings")
 local consts                 = require("scr.const.game_consts")
@@ -43,12 +44,9 @@ end
 local function spawn_damned()
     local damned_id = settings.damned_spawn_pool[math.random(#settings.damned_spawn_pool)]
     local damned_config = settings.damned[damned_id];
+    local damned_url = factory.create(damned_config.factory_url)
 
-    local damned_url = factory.create(damned_config.factory_url, nil, nil, {
-        config_id = damned_id
-    })
-
-    return damned_url
+    return damned_url, damned_id
 end
 
 local function apply_symbols(self, symbols_apply_data, index, on_complete)
@@ -64,14 +62,10 @@ local function apply_symbols(self, symbols_apply_data, index, on_complete)
     end
 
     local symbol = symbols_apply_data[index]
+    local effect_config = settings.effects[symbol.effect_id]
 
     -- Apply the current symbol effect
-    msg.post(self.damned_url, MN.apply_effect, {
-        effect = symbol.effect_id,
-        value = symbol.value
-    })
-
-    local effect_config = settings.effects[symbol.effect_id]
+    self.damned_model:apply_effect(symbol.effect_id, symbol.value)
 
     timer.delay(effect_config.duration, false, function()
         -- Pass self to maintain context if needed
@@ -88,7 +82,10 @@ handlers[STATES.PREPARE_BATTLE] = function(self)
         self.slot_machine_url,
         settings.slot_machine.default_reels_count)
 
-    self.damned_url = spawn_damned()
+    local damned_url, damned_config_id = spawn_damned()
+    self.damned_url = damned_url
+    self.damned_model = damned_prototype.new(damned_url, damned_config_id)
+
     transition(STATES.SPIN, self)
 end
 
@@ -101,16 +98,15 @@ handlers[STATES.SPIN] = function(self)
 end
 
 handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
-    apply_symbols(self, outcome, 1, function ()
+    apply_symbols(self, outcome, 1, function()
         transition(STATES.DAMNED_ATTACK, self)
     end)
 end
 
-handlers[STATES.DAMNED_ATTACK] = function (self)
-    timer.delay(2.0, false, function ()
-        print(self)
+handlers[STATES.DAMNED_ATTACK] = function(self)
+    timer.delay(2.0, false, function()
         transition(STATES.SPIN, self)
-    end)    
+    end)
 end
 
 
@@ -143,16 +139,8 @@ function M:on_message(message_id, message, sender)
 end
 
 function M:on_input(action_id, action)
-    -- any tap / Space stops the next unlocked reel in order
     if action_id == input_names.STOP_REEL and action.pressed then
         self.slot_machine_model:stop_next_reel()
-        -- if self.model.spinning and self.current_stop <= #self.reel_urls then
-        -- 	msg.post(self.reel_urls[self.current_stop], MN.stop_reel, {
-        -- 		reel_index = self.current_stop,
-        -- 		reply_to   = msg.url(),
-        -- 	})
-        -- 	self.current_stop = self.current_stop + 1
-        -- end
     end
 end
 

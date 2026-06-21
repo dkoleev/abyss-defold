@@ -1,4 +1,4 @@
-local model = require("scr.slot_machine")
+local model_prototype = require("scr.slot_machine")
 local MN = require("scr.const.message_names")
 local IN = require("scr.const.input_names")
 
@@ -27,13 +27,13 @@ function init(self)
 		self.reel_urls[i] = msg.url(nil, root_id, "reel")
 	end
 
-	self.model = model.new(self.reel_urls)
+	self.model = model_prototype.new(self.reel_urls)
 	self.model.on_spin_done = function(symbols_apply_data)
-		--TODO: visual effect about strat to apply symbols 
+		--TODO: visual effect about strat to apply symbols
 	end
 	self.current_stop = 1 -- which reel player stops next
 
-	model.spin(self.model)
+	self.model:spin()
 end
 
 function on_input(self, action_id, action)
@@ -51,6 +51,6 @@ end
 
 function on_message(self, message_id, message)
 	if message_id == MN.reel_stopped then
-		model.on_reel_stopped(self.model, message)
+		self.model:on_reel_stopped(message)
 	end
 end

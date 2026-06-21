@@ -3,10 +3,24 @@ local battle = require("scr.battle")
 local settings = require("scr.settings.game_settings")
 
 local M = {}
+M.__index = M
 
 local REEL_COUNT = 3
 
-local function apply_symbols(self, symbols_apply_data, index)
+function M.new(reel_urls)
+    local self = setmetatable({
+        url          = msg.url(),
+        reels        = reel_urls,
+        results      = {},
+        stopped      = 0,
+        spinning     = false,
+        on_spin_done = nil,
+    }, M)
+
+    return self
+end
+
+local function apply_symbols(symbols_apply_data, index)
     -- Start at the first symbol if no index is provided
     index = index or 1
 
@@ -27,48 +41,11 @@ local function apply_symbols(self, symbols_apply_data, index)
 
     timer.delay(effect_config.duration, false, function()
         -- Pass self to maintain context if needed
-        apply_symbols(self, symbols_apply_data, index + 1)
+        apply_symbols(symbols_apply_data, index + 1)
     end)
 end
 
-function M.new(reel_urls)
-    local sm = {
-        url          = msg.url(),
-        reels        = reel_urls, -- array of reel GO urls
-        results      = {},        -- filled as reels stop
-        stopped      = 0,
-        spinning     = false,
-        on_spin_done = nil, -- callback(results)
-    }
-
-    return sm
-end
-
-function M.spin(self)
-    self.results = {}
-    self.stopped = 0
-    self.spinning = true
-    for _, url in ipairs(self.reels) do
-        msg.post(url, MN.start_spin)
-    end
-end
-
--- Call from parent script's on_message
-function M.on_reel_stopped(self, message)
-    self.results[message.reel_index] = message.symbol
-    self.stopped = self.stopped + 1
-
-    if self.stopped == #self.reels then
-        self.spinning = false
-        local outcome = M.evaluate(self.results)
-        battle.apply_slot_machine_symbols(outcome)
-        if self.on_spin_done then
-            self.on_spin_done(outcome)
-        end
-    end
-end
-
-function M.evaluate(results)
+local function evaluate(results)
     local counts = {}
     for _, sym in ipairs(results) do
         counts[sym.id] = (counts[sym.id] or 0) + 1
@@ -89,6 +66,30 @@ function M.evaluate(results)
     end
 
     return symbol_apply_data
+end
+
+function M:spin()
+    self.results = {}
+    self.stopped = 0
+    self.spinning = true
+    for _, url in ipairs(self.reels) do
+        msg.post(url, MN.start_spin)
+    end
+end
+
+-- Call from parent script's on_message
+function M:on_reel_stopped(message)
+    self.results[message.reel_index] = message.symbol
+    self.stopped = self.stopped + 1
+
+    if self.stopped == #self.reels then
+        self.spinning = false
+        local outcome = evaluate(self.results)
+        battle.apply_slot_machine_symbols(outcome)
+        if self.on_spin_done then
+            self.on_spin_done(outcome)
+        end
+    end
 end
 
 return M

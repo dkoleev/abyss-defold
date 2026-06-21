@@ -6,31 +6,6 @@ M.__index = M
 
 local REEL_COUNT = 3
 
-local function apply_symbols(symbols_apply_data, index)
-    -- Start at the first symbol if no index is provided
-    index = index or 1
-
-    -- Base case: if we've processed all symbols, stop
-    if index > #symbols_apply_data then
-        return
-    end
-
-    local symbol = symbols_apply_data[index]
-
-    -- Apply the current symbol effect
-    msg.post(battle.current_damned, MN.apply_effect, {
-        effect = symbol.effect_id,
-        value = symbol.value
-    })
-
-    local effect_config = settings.effects[symbol.effect_id]
-
-    timer.delay(effect_config.duration, false, function()
-        -- Pass self to maintain context if needed
-        apply_symbols(symbols_apply_data, index + 1)
-    end)
-end
-
 local function evaluate(results)
     local counts = {}
     for _, sym in ipairs(results) do

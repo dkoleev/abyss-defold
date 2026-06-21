@@ -5,7 +5,6 @@ local MN = require("scr.const.message_names")
 function init(self)
 	msg.post(".", MN.acquire_input_focus)
 
-	-- model.init()
 	self.model = model.new()
 	self.model:start()
 end

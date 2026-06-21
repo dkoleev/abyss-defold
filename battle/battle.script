@@ -1,8 +1,11 @@
 local model = require("scr.battle")
+local model_state_machine = require("scr.battle_state_machine")
 
 
 function init(self)
-	model.init()
+	-- model.init()
+	self.model = model_state_machine.new()
+	self.model:start()
 end
 
 function on_input(self, action_id, action)
@@ -10,7 +13,8 @@ function on_input(self, action_id, action)
 end
 
 function on_message(self, message_id, message, sender)
-	model.on_message(message_id, message, sender)
+	self.model:on_message(message_id, message, sender)
+	-- model.on_message(message_id, message, sender)
 end
 
 

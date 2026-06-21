@@ -1,15 +1,17 @@
 local model = require("scr.battle")
-local model_state_machine = require("scr.battle_state_machine")
+local MN = require("scr.const.message_names")
 
 
 function init(self)
+	msg.post(".", MN.acquire_input_focus)
+
 	-- model.init()
-	self.model = model_state_machine.new()
+	self.model = model.new()
 	self.model:start()
 end
 
 function on_input(self, action_id, action)
-
+	self.model:on_input(action_id, action)
 end
 
 function on_message(self, message_id, message, sender)

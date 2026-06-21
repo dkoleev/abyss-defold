@@ -3,11 +3,15 @@ local const = require("scr.const.game_consts")
 local M = {}
 
 M.battle = {
-    damned_factory_url = "/factories#damned_factory"
+    damned_factory_url = "/factories#damned_factory",
 }
 
 M.player = {
     health = 100
+}
+
+M.slot_machine = {
+    default_reels_count = 3
 }
 
 M.levels = {

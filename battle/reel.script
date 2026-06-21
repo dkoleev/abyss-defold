@@ -43,6 +43,7 @@ function init(self)
     self.locked   = false
     self.result   = nil
     self.slots    = {}
+    self.battle_url = msg.url("/root#battle")
 
     setup_reel(self)
 end
@@ -94,7 +95,7 @@ function on_message(self, message_id, message)
 
         self.result = best_slot.symbol
 
-        msg.post(message.reply_to, MN.reel_stopped, {
+        msg.post(self.battle_url, MN.reel_stopped, {
             reel_index = message.reel_index,
             symbol     = self.result,
         })

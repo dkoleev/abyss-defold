@@ -1,4 +1,11 @@
+local global_urls   = require("scr.const.global_urls")
 local message_names = require("scr.const.message_names")
+local log           = require("log.log")
+
+function init(self)
+	self.battle_url = global_urls.battle()
+	log:debug("Spawn damend: " .. msg.url())
+end
 
 function on_message(self, message_id, message, sender)
 	if message_id == message_names.dead then
@@ -10,5 +17,14 @@ function on_message(self, message_id, message, sender)
 			"scale",
 			go.PLAYBACK_ONCE_PINGPONG,
 			vmath.vector3(0.5), go.EASING_INBACK, 0.5)
+	end
+
+	if message_id == message_names.attack then
+		go.animate(".",
+			"scale",
+			go.PLAYBACK_ONCE_PINGPONG,
+			vmath.vector3(1.5), go.EASING_INBACK, 0.5, 0, function()
+				msg.post(self.battle_url, message_names.damned_attack_finished)
+			end)
 	end
 end

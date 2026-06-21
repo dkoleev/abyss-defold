@@ -6,6 +6,7 @@ local settings               = require("scr.settings.game_settings")
 local consts                 = require("scr.const.game_consts")
 local proxy_loader           = require("scr.utils.proxy_loader")
 local input_names            = require("scr.const.input_names")
+local log                    = require("log.log")
 
 local M                      = {}
 M.__index                    = M
@@ -31,22 +32,22 @@ local function is_player_dead()
     return player.health <= 0
 end
 
-local function load_level()
-    proxy_loader.load(settings.levels.level_0.factory_url, {
-        enable = true,
-        acquire_input = true,
-        on_loaded = function(url)
-            M.spawn_damned()
-        end
-    })
-end
-
 local function spawn_damned()
     local damned_id = settings.damned_spawn_pool[math.random(#settings.damned_spawn_pool)]
     local damned_config = settings.damned[damned_id];
     local damned_url = factory.create(damned_config.factory_url)
 
     return damned_url, damned_id
+end
+
+local function load_level(self)
+    proxy_loader.load(settings.levels.level_0.factory_url, {
+        enable = true,
+        acquire_input = true,
+        on_loaded = function(url)
+            --do somehting on level loaded
+        end
+    })
 end
 
 local function apply_symbols(self, symbols_apply_data, index, on_complete)
@@ -104,10 +105,11 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
 end
 
 handlers[STATES.DAMNED_ATTACK] = function(self)
-    
-    timer.delay(2.0, false, function()
+    self.damned_model.on_attack_done = function()
         transition(STATES.SPIN, self)
-    end)
+    end
+
+    self.damned_model:attack()
 end
 
 
@@ -136,6 +138,10 @@ function M:on_message(message_id, message, sender)
 
     if message_id == MN.reel_stopped then
         self.slot_machine_model:on_reel_stopped(message)
+    end
+
+    if message_id == MN.damned_attack_finished then
+        self.damned_model:finish_attack()
     end
 end
 

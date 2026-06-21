@@ -45,8 +45,14 @@ function M:take_damage(amount)
     end
 end
 
-function M:attack(on_complete)
+function M:attack()
     msg.post(self.url, MN.attack)
+end
+
+function M:finish_attack()
+    if self.on_attack_done then
+        self.on_attack_done()
+    end
 end
 
 return M

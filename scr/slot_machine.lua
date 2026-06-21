@@ -7,19 +7,6 @@ M.__index = M
 
 local REEL_COUNT = 3
 
-function M.new(reel_urls)
-    local self = setmetatable({
-        url          = msg.url(),
-        reels        = reel_urls,
-        results      = {},
-        stopped      = 0,
-        spinning     = false,
-        on_spin_done = nil,
-    }, M)
-
-    return self
-end
-
 local function apply_symbols(symbols_apply_data, index)
     -- Start at the first symbol if no index is provided
     index = index or 1
@@ -68,13 +55,27 @@ local function evaluate(results)
     return symbol_apply_data
 end
 
+--================= PUBLIC API ========================
+--=====================================================
+
+function M.new(url)
+    local self = setmetatable({
+        url          = url,
+        results      = {},
+        stopped      = 0,
+        spinning     = false,
+        on_spin_done = nil,
+    }, M)
+
+    return self
+end
+
 function M:spin()
     self.results = {}
     self.stopped = 0
     self.spinning = true
-    for _, url in ipairs(self.reels) do
-        msg.post(url, MN.start_spin)
-    end
+    
+    msg.post(self.url, MN.start_spin)
 end
 
 -- Call from parent script's on_message

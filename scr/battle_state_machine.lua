@@ -1,16 +1,16 @@
-local player       = require("scr.player")
-local slot_machine = require("scr.slot_machine")
-local MN           = require("scr.const.message_names")
-local settings     = require("scr.settings.game_settings")
-local consts       = require("scr.const.game_consts")
-local proxy_loader = require("scr.utils.proxy_loader")
+local player                 = require("scr.player")
+local slot_machine_prototype = require("scr.slot_machine")
+local MN                     = require("scr.const.message_names")
+local settings               = require("scr.settings.game_settings")
+local consts                 = require("scr.const.game_consts")
+local proxy_loader           = require("scr.utils.proxy_loader")
 
-local M            = {}
-M.__index          = M
+local M                      = {}
+M.__index                    = M
 
-local handlers     = {}
+local handlers               = {}
 
-local STATES       = {
+local STATES                 = {
     PREPARE_BATTLE = "prepare_battle",
     SPIN           = "spin",
     APPLY_SYMBOLS  = "apply_symbols",
@@ -53,12 +53,17 @@ end
 
 handlers[STATES.PREPARE_BATTLE] = function(self)
     load_level()
+
+    self.slot_machine_url = msg.url("/slot_machine#slot_machine")
+    self.slot_machine_model = slot_machine_prototype.new(self.slot_machine_url) 
+
     self.damned_url = spawn_damned()
-    transition(STATES.SPIN)
+    transition(STATES.SPIN, self)
 end
 
-handlers[STATES.SPIN] = function()
-
+handlers[STATES.SPIN] = function(self)
+    print("SPIN ", self.slot_machine_url)
+    self.slot_machine_model:spin()
 end
 
 --===== PUBLIC API ==================================
@@ -66,11 +71,12 @@ end
 
 function M.new()
     local self = setmetatable({
-        url              = msg.url(),
-        state            = nil,
-        damned_url       = nil,
-        slot_machine_url = nil,
-        player_url       = nil
+        url                = msg.url(),
+        state              = nil,
+        damned_url         = nil,
+        slot_machine_url   = nil,
+        slot_machine_model = nil,
+        player_url         = nil
     }, M)
 
     return self

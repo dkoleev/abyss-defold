@@ -27,13 +27,13 @@ function init(self)
 		self.reel_urls[i] = msg.url(nil, root_id, "reel")
 	end
 
-	self.model = model_prototype.new(self.reel_urls)
-	self.model.on_spin_done = function(symbols_apply_data)
-		--TODO: visual effect about strat to apply symbols
-	end
+	-- self.model = model_prototype.new(self.reel_urls)
+	-- self.model.on_spin_done = function(symbols_apply_data)
+	-- 	--TODO: visual effect about strat to apply symbols
+	-- end
 	self.current_stop = 1 -- which reel player stops next
 
-	self.model:spin()
+	-- self.model:spin()
 end
 
 function on_input(self, action_id, action)
@@ -50,7 +50,12 @@ function on_input(self, action_id, action)
 end
 
 function on_message(self, message_id, message)
-	if message_id == MN.reel_stopped then
-		self.model:on_reel_stopped(message)
+	if message_id == MN.start_spin then
+		for _, url in ipairs(self.reel_urls) do
+			msg.post(url, MN.start_spin)
+		end
 	end
+	-- if message_id == MN.reel_stopped then
+	-- 	self.model:on_reel_stopped(message)
+	-- end
 end

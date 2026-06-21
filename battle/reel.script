@@ -1,6 +1,7 @@
-local MN         = require("scr.const.message_names")
+local MN              = require("scr.const.message_names")
 local visual_settings = require("scr.settings.visual_settings")
-local settings = require("scr.settings.game_settings")
+local settings        = require("scr.settings.game_settings")
+local global_urls     = require("scr.const.global_urls")
 
 local function get_max_y(slots)
     local max_y = -math.huge
@@ -20,7 +21,7 @@ local function setup_reel(self)
     local symbol_2 = go.get_id("symbol_2")
     local symbol_3 = go.get_id("symbol_3")
 
-    local symbols = {symbol_1, symbol_2, symbol_3}
+    local symbols = { symbol_1, symbol_2, symbol_3 }
     local count = #symbols
 
     for i, id in ipairs(symbols) do
@@ -39,11 +40,11 @@ local function setup_reel(self)
 end
 
 function init(self)
-    self.spinning = false
-    self.locked   = false
-    self.result   = nil
-    self.slots    = {}
-    self.battle_url = msg.url("/root#battle")
+    self.spinning   = false
+    self.locked     = false
+    self.result     = nil
+    self.slots      = {}
+    self.battle_url = global_urls.battle()
 
     setup_reel(self)
 end

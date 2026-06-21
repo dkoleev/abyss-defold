@@ -5,8 +5,6 @@ local settings     = require("scr.settings.game_settings")
 local REEL_SPACING = 40 -- px between reels
 
 function init(self)
-	-- msg.post(".", MN.acquire_input_focus)
-
 	self.reel_urls = {}
 
 	local pos = go.get_position(".")
@@ -25,27 +23,6 @@ function init(self)
 		-- find the root GO of spawned collection by its id suffix
 		local root_id     = ids[hash("/root")]
 		self.reel_urls[i] = msg.url(nil, root_id, "reel")
-	end
-
-	-- self.model = model_prototype.new(self.reel_urls)
-	-- self.model.on_spin_done = function(symbols_apply_data)
-	-- 	--TODO: visual effect about strat to apply symbols
-	-- end
-	self.current_stop = 1 -- which reel player stops next
-
-	-- self.model:spin()
-end
-
-function on_input(self, action_id, action)
-	-- any tap / Space stops the next unlocked reel in order
-	if action_id == IN.STOP_REEL and action.pressed then
-		-- if self.model.spinning and self.current_stop <= #self.reel_urls then
-		-- 	msg.post(self.reel_urls[self.current_stop], MN.stop_reel, {
-		-- 		reel_index = self.current_stop,
-		-- 		reply_to   = msg.url(),
-		-- 	})
-		-- 	self.current_stop = self.current_stop + 1
-		-- end
 	end
 end
 

@@ -104,6 +104,7 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
 end
 
 handlers[STATES.DAMNED_ATTACK] = function(self)
+    
     timer.delay(2.0, false, function()
         transition(STATES.SPIN, self)
     end)

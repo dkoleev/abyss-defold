@@ -1,57 +1,8 @@
-local slot_machine_logic = require("scr.slot_machine")
+local model = require("scr.slot_machine")
 local MN = require("scr.const.message_names")
 local IN = require("scr.const.input_names")
-local battle = require("scr.battle")
-local settings = require("scr.settings.game_settings")
 
 local REEL_SPACING = 40 -- px between reels
-
-local function apply_symbols_delayed(self, symbols_apply_data, index)
-	-- Start at the first symbol if no index is provided
-	index = index or 1
-
-	-- Base case: if we've processed all symbols, stop
-	if index > #symbols_apply_data then
-		return
-	end
-
-	local symbol = symbols_apply_data[index]
-
-	-- Apply the current symbol effect
-	msg.post(battle.current_damned, MN.apply_effect, {
-		effect = symbol.effect_id,
-		value = symbol.value
-	})
-
-	local effect_config = settings.effects[symbol.effect_id]
-
-	timer.delay(effect_config.duration, false, function()
-		-- Pass self to maintain context if needed
-		apply_symbols_delayed(self, symbols_apply_data, index + 1)
-	end)
-end
-
--- local function apply_effects(self, effects)
--- 	for _, fx in ipairs(effects) do
--- 		if fx.type == "attack" then
--- 			msg.post("enemy#brain", "take_damage", { amount = fx.value })
--- 		elseif fx.type == "defend" then
--- 			msg.post("player#stats", "add_block", { amount = fx.value })
--- 		elseif fx.type == "heal" then
--- 			msg.post("player#stats", "heal", { amount = fx.value })
--- 		elseif fx.type == "gold" then
--- 			msg.post("game_manager#script", "add_gold", { amount = fx.value })
--- 		end
-
--- 		-- triple bonus visual feedback
--- 		if fx.is_triple then
--- 			msg.post("ui#hud", "show_triple_bonus", { symbol = fx.symbol.id })
--- 		end
--- 	end
-
--- 	-- after effects resolve, enemy takes its turn
--- 	msg.post("enemy#brain", "enemy_turn")
--- end
 
 function init(self)
 	msg.post(".", MN.acquire_input_focus)
@@ -76,13 +27,13 @@ function init(self)
 		self.reel_urls[i] = msg.url(nil, root_id, "reel")
 	end
 
-	self.model = slot_machine_logic.new(self.reel_urls)
+	self.model = model.new(self.reel_urls)
 	self.model.on_spin_done = function(symbols_apply_data)
-		apply_symbols_delayed(self, symbols_apply_data)
+		--TODO: visual effect about strat to apply symbols 
 	end
 	self.current_stop = 1 -- which reel player stops next
 
-	slot_machine_logic.spin(self.model)
+	model.spin(self.model)
 end
 
 function on_input(self, action_id, action)
@@ -100,6 +51,6 @@ end
 
 function on_message(self, message_id, message)
 	if message_id == MN.reel_stopped then
-		slot_machine_logic.on_reel_stopped(self.model, message)
+		model.on_reel_stopped(self.model, message)
 	end
 end

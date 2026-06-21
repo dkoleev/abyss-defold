@@ -1,8 +1,35 @@
 local MN = require("scr.const.message_names")
+local battle = require("scr.battle")
+local settings = require("scr.settings.game_settings")
 
 local M = {}
 
 local REEL_COUNT = 3
+
+local function apply_symbols(self, symbols_apply_data, index)
+	-- Start at the first symbol if no index is provided
+	index = index or 1
+
+	-- Base case: if we've processed all symbols, stop
+	if index > #symbols_apply_data then
+		return
+	end
+
+	local symbol = symbols_apply_data[index]
+
+	-- Apply the current symbol effect
+	msg.post(battle.current_damned, MN.apply_effect, {
+		effect = symbol.effect_id,
+		value = symbol.value
+	})
+
+	local effect_config = settings.effects[symbol.effect_id]
+
+	timer.delay(effect_config.duration, false, function()
+		-- Pass self to maintain context if needed
+		apply_symbols(self, symbols_apply_data, index + 1)
+	end)
+end
 
 function M.new(reel_urls)
     local sm = {
@@ -34,6 +61,8 @@ function M.on_reel_stopped(self, message)
         self.spinning = false
         local outcome = M.evaluate(self.results)
         if self.on_spin_done then
+            battle.apply_slot_machine_symbols(outcome)
+            -- apply_symbols(self, outcome)
             self.on_spin_done(outcome)
         end
     end
@@ -61,35 +90,5 @@ function M.evaluate(results)
 
     return symbol_apply_data
 end
-
--- Evaluate result table → outcome
--- function M.evaluate(results)
---     local counts = {}
---     for _, sym in ipairs(results) do
---         counts[sym.id] = (counts[sym.id] or 0) + 1
---     end
-
---     local effects = {}
---     for id, count in pairs(counts) do
---         local sym = results[1] -- grab a reference for type/value
---         -- find first matching symbol for data
---         for _, s in ipairs(results) do
---             if s.id == id then
---                 sym = s; break
---             end
---         end
-
---         local multiplier = (count == REEL_COUNT) and 2 or 1 -- triple = bonus
---         table.insert(effects, {
---             type      = sym.type,
---             value     = sym.value * count * multiplier,
---             effect_id = sym.effect_id,
---             is_triple = (count == REEL_COUNT),
---             symbol    = sym,
---         })
---     end
-
---     return effects -- list of {type, value, is_triple, symbol}
--- end
 
 return M

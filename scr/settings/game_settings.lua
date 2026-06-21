@@ -18,7 +18,8 @@ M.levels = {
 
 M.effects = {
     [const.effects.p_dmg] = {
-        duration = 1.0
+        type = "active",
+        duration = 0.6
     }
 }
 
@@ -49,7 +50,7 @@ M.damned = {
     },
     [const.damned.plague_fly] = {
         factory_url = "/factories#damned_plague_fly_factory",
-        health = 50,
+        health = 80,
         p_dmg = 5,
         m_dmg = 0
     },

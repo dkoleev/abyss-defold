@@ -1,6 +1,6 @@
-local model_prototype = require("scr.slot_machine")
-local MN = require("scr.const.message_names")
-local IN = require("scr.const.input_names")
+local MN           = require("scr.const.message_names")
+local IN           = require("scr.const.input_names")
+local settings     = require("scr.settings.game_settings")
 
 local REEL_SPACING = 40 -- px between reels
 
@@ -10,7 +10,7 @@ function init(self)
 	self.reel_urls = {}
 
 	local pos = go.get_position(".")
-	local reels_count = 3
+	local reels_count = settings.slot_machine.default_reels_count
 	local start_offset_x = -REEL_SPACING * (reels_count - 1) / 2
 
 	for i = 1, reels_count do

@@ -4,9 +4,7 @@ local settings = require("scr.settings.game_settings")
 local M = {}
 M.__index = M
 
-local REEL_COUNT = 3
-
-local function evaluate(results)
+local function evaluate(results, self)
     local counts = {}
     for _, sym in ipairs(results) do
         counts[sym.id] = (counts[sym.id] or 0) + 1
@@ -14,7 +12,7 @@ local function evaluate(results)
 
     local symbol_apply_data = {}
     for reel_index, symbol in ipairs(results) do
-        local is_triple = counts[symbol.id] == REEL_COUNT;
+        local is_triple = counts[symbol.id] == self.reels_count;
         local multiplier = is_triple and 2 or 1 -- triple = bonus
         table.insert(symbol_apply_data, {
             reel_index = reel_index,
@@ -69,7 +67,7 @@ function M:on_reel_stopped(message)
 
     if self.stopped == self.reels_count then
         self.spinning = false
-        local outcome = evaluate(self.results)
+        local outcome = evaluate(self.results, self)
         if self.on_spin_done then
             self.on_spin_done(outcome)
         end

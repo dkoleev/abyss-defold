@@ -51,16 +51,19 @@ function M:get_damage(amount)
     end
 end
 
+-- start attack
 function M:attack()
     msg.post(self.url, MN.attack)
 end
 
+-- full attack completed
 function M:finish_attack()
     if self.on_attack_done then
         self.on_attack_done()
     end
 end
 
+-- single attack in ative point
 function M:apply_attack()
     if self.on_attack_apply then
         self.on_attack_apply(self.p_dmg)

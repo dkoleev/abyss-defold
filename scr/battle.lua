@@ -48,6 +48,13 @@ local function load_level(self)
 end
 
 local function apply_symbols(self, symbols_apply_data, index, on_complete)
+    if self.damned_model.is_dead then
+        if on_complete then
+            on_complete()
+        end
+        return
+    end
+    
     -- Start at the first symbol if no index is provided
     index = index or 1
 
@@ -108,7 +115,10 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
     end
 
     apply_symbols(self, outcome, 1, function()
-        transition(STATES.DAMNED_ATTACK, self)
+        if not self.damned_model.is_dead and
+           not self.player_model.is_dead then
+            transition(STATES.DAMNED_ATTACK, self)
+        end
     end)
 end
 

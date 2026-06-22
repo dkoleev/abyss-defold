@@ -1,0 +1,4 @@
+function init(self)
+	-- local root = gui.get_node("root")
+	-- gui.set_enabled(root, false)
+end

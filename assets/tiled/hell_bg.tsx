@@ -2,15 +2,15 @@
 <tileset version="1.10" tiledversion="1.12.2" name="hell_bg" tilewidth="1024" tileheight="346" tilecount="4" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
-  <image source="../backgrounds/hell_bg/Background layer.png" width="1024" height="346"/>
+  <image source="../backgrounds/hell/Background layer.png" width="1024" height="346"/>
  </tile>
  <tile id="1">
-  <image source="../backgrounds/hell_bg/back layer.png" width="1024" height="346"/>
+  <image source="../backgrounds/hell/back layer.png" width="1024" height="346"/>
  </tile>
  <tile id="2">
-  <image source="../backgrounds/hell_bg/front layer.png" width="1024" height="346"/>
+  <image source="../backgrounds/hell/front layer.png" width="1024" height="346"/>
  </tile>
  <tile id="3">
-  <image source="../backgrounds/hell_bg/middle layer.png" width="1024" height="346"/>
+  <image source="../backgrounds/hell/middle layer.png" width="1024" height="346"/>
  </tile>
 </tileset>

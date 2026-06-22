@@ -174,3 +174,11 @@ embedded_instances {
   "}\n"
   ""
 }
+embedded_instances {
+  id: "shop"
+  data: "components {\n"
+  "  id: \"battle_shop\"\n"
+  "  component: \"/battle/battle_shop/battle_shop.gui\"\n"
+  "}\n"
+  ""
+}

@@ -1,5 +1,3 @@
-local model = require("scr.player")
-
 function init(self)
-	model.init()
+	
 end

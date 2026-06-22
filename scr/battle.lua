@@ -1,4 +1,4 @@
-local player                 = require("scr.player")
+local player_prototype       = require("scr.player")
 local slot_machine_prototype = require("scr.slot_machine")
 local damned_prototype       = require("scr.damned")
 local MN                     = require("scr.const.message_names")
@@ -7,6 +7,7 @@ local consts                 = require("scr.const.game_consts")
 local proxy_loader           = require("scr.utils.proxy_loader")
 local input_names            = require("scr.const.input_names")
 local log                    = require("log.log")
+local global_urls            = require("scr.const.global_urls")
 
 local M                      = {}
 M.__index                    = M
@@ -26,10 +27,6 @@ local STATES                 = {
 local function transition(new_state, ...)
     M.state = new_state
     handlers[new_state](...)
-end
-
-local function is_player_dead()
-    return player.health <= 0
 end
 
 local function spawn_damned()
@@ -78,7 +75,10 @@ end
 handlers[STATES.PREPARE_BATTLE] = function(self)
     load_level()
 
-    self.slot_machine_url = msg.url("/slot_machine#slot_machine")
+    self.player_url = global_urls.player()
+    self.player_model = player_prototype.new()
+
+    self.slot_machine_url = global_urls.slot_machine()
     self.slot_machine_model = slot_machine_prototype.new(
         self.slot_machine_url,
         settings.slot_machine.default_reels_count)
@@ -99,6 +99,14 @@ handlers[STATES.SPIN] = function(self)
 end
 
 handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
+    self.damned_model.on_dead = function()
+        transition(STATES.PLAYER_WON, self)
+    end
+
+    self.player_model.on_dead = function()
+        transition(STATES.PLAYER_LOST, self)
+    end
+
     apply_symbols(self, outcome, 1, function()
         transition(STATES.DAMNED_ATTACK, self)
     end)
@@ -109,9 +117,28 @@ handlers[STATES.DAMNED_ATTACK] = function(self)
         transition(STATES.SPIN, self)
     end
 
+    self.damned_model.on_attack_apply = function(amount)
+        self.player_model:get_damage(amount)
+    end
+
+    self.damned_model.on_dead = function()
+        transition(STATES.PLAYER_WON, self)
+    end
+
+    self.player_model.on_dead = function()
+        transition(STATES.PLAYER_LOST, self)
+    end
+
     self.damned_model:attack()
 end
 
+handlers[STATES.PLAYER_WON] = function(self)
+    log:debug("Player WON!")
+end
+
+handlers[STATES.PLAYER_LOST] = function()
+    log:debug("Player LOST!")
+end
 
 --===== PUBLIC API ==================================
 --===================================================
@@ -121,9 +148,11 @@ function M.new()
         url                = msg.url(),
         state              = nil,
         damned_url         = nil,
+        damned_model       = nil,
         slot_machine_url   = nil,
         slot_machine_model = nil,
-        player_url         = nil
+        player_url         = nil,
+        player_model       = nil
     }, M)
 
     return self
@@ -142,6 +171,10 @@ function M:on_message(message_id, message, sender)
 
     if message_id == MN.damned_attack_finished then
         self.damned_model:finish_attack()
+    end
+
+    if message_id == MN.damned_attack_apply then
+        self.damned_model:apply_attack()
     end
 end
 

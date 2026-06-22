@@ -8,27 +8,29 @@ local M        = {}
 M.__index      = M
 
 function M.new(url, config_id)
-    local self          = setmetatable({}, M)
+    local self           = setmetatable({}, M)
 
-    local config        = settings.damned[config_id];
-    self.url            = url
-    self.max_health     = config.health
-    self.health         = config.health
-    self.p_dmg          = config.p_dmg
-    self.m_dmg          = config.m_dmg
-    self.is_dead        = false;
-    self.on_attack_done = nil
+    local config         = settings.damned[config_id];
+    self.url             = url
+    self.max_health      = config.health
+    self.health          = config.health
+    self.p_dmg           = config.p_dmg
+    self.m_dmg           = config.m_dmg
+    self.is_dead         = false
+    self.on_attack_done  = nil
+    self.on_attack_apply = nil
+    self.on_dead         = nil
 
     return self
 end
 
 function M:apply_effect(effect, value)
     if effect == const.effects.p_dmg then
-        self:take_damage(value)
+        self:get_damage(value)
     end
 end
 
-function M:take_damage(amount)
+function M:get_damage(amount)
     if self.is_dead then
         return
     end
@@ -40,6 +42,10 @@ function M:take_damage(amount)
         self.is_dead = true
         log:debug("Dead")
         msg.post(self.url, MN.dead)
+
+        if self.on_dead then
+            self.on_dead()
+        end
     else
         msg.post(self.url, MN.take_damage)
     end
@@ -52,6 +58,12 @@ end
 function M:finish_attack()
     if self.on_attack_done then
         self.on_attack_done()
+    end
+end
+
+function M:apply_attack()
+    if self.on_attack_apply then
+        self.on_attack_apply(self.p_dmg)
     end
 end
 

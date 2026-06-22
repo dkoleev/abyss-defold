@@ -20,10 +20,17 @@ function on_message(self, message_id, message, sender)
 	end
 
 	if message_id == message_names.attack then
+		local attack_duration = 0.5
+		local attack_damage_phase = attack_duration / 2
+
+		timer.delay(attack_damage_phase, false, function()
+			msg.post(self.battle_url, message_names.damned_attack_apply)
+		end)
+
 		go.animate(".",
 			"scale",
 			go.PLAYBACK_ONCE_PINGPONG,
-			vmath.vector3(1.5), go.EASING_INBACK, 0.5, 0, function()
+			vmath.vector3(1.5), go.EASING_INBACK, attack_duration, 0, function()
 				msg.post(self.battle_url, message_names.damned_attack_finished)
 			end)
 	end

@@ -65,7 +65,8 @@ M.dead                   = hash("dead")
 M.enter_fight            = hash("enter_fight")
 M.exit_fight             = hash("exit_fight")
 M.attack                 = hash("attack")
-M.damned_attack_finished        = hash("attack_finished")
+M.damned_attack_finished = hash("damned_attack_finished")
+M.damned_attack_apply    = hash("damned_attack_apply")
 M.apply_effect           = hash("apply_effect")
 
 -- ─── Slots ────────────────────────────────────────────────────────────────────

@@ -92,6 +92,10 @@ local function apply_symbols(self, symbols_apply_data, index, context, on_comple
     end)
 end
 
+local function add_ring(self, ring_id)
+    table.insert(self.rings, ring_prototype.new(msg.url(), ring_id))
+end
+
 
 handlers[STATES.PREPARE_BATTLE] = function(self)
     load_level()
@@ -110,8 +114,8 @@ handlers[STATES.PREPARE_BATTLE] = function(self)
 
     -- Add start rings
     -- TODO: setup through the shop
-    table.insert(self.rings, ring_prototype.new(msg.url(), settings.rings.footmen.id))
-    table.insert(self.rings, ring_prototype.new(msg.url(), settings.rings.watcher.id))
+    add_ring(self, settings.rings.footmen.id)
+    add_ring(self, settings.rings.watcher.id)
 
     transition(STATES.SPIN, self)
 end

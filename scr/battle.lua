@@ -1,5 +1,6 @@
 local player_prototype       = require("scr.player")
 local slot_machine_prototype = require("scr.slot_machine")
+local ring_prototype         = require("scr.ring")
 local damned_prototype       = require("scr.damned")
 local MN                     = require("scr.const.message_names")
 local settings               = require("scr.settings.game_settings")
@@ -54,7 +55,7 @@ local function apply_symbols(self, symbols_apply_data, index, on_complete)
         end
         return
     end
-    
+
     -- Start at the first symbol if no index is provided
     index = index or 1
 
@@ -94,6 +95,12 @@ handlers[STATES.PREPARE_BATTLE] = function(self)
     self.damned_url = damned_url
     self.damned_model = damned_prototype.new(damned_url, damned_config_id)
 
+    self.rings = {}
+
+    local test_ring = ring_prototype.new(msg.url(), settings.rings.footmen.id)
+    print(test_ring:get_description())
+    print(test_ring:get_dynamic_description())
+
     transition(STATES.SPIN, self)
 end
 
@@ -116,7 +123,7 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
 
     apply_symbols(self, outcome, 1, function()
         if not self.damned_model.is_dead and
-           not self.player_model.is_dead then
+            not self.player_model.is_dead then
             transition(STATES.DAMNED_ATTACK, self)
         end
     end)

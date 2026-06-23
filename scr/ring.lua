@@ -1,0 +1,43 @@
+local text_utils = require("scr.utils.text_utils")
+local settings   = require("scr.settings.game_settings")
+
+local M          = {}
+M.__index        = M
+
+function M.new(url, config_id)
+    local self     = setmetatable({}, M)
+
+    local config   = settings.rings[config_id]
+
+    self.config_id = config_id
+    self.url       = url
+
+    -- Create a brand new table for runtime state
+    self.values    = {}
+    if config and config.values then
+        for k, v in pairs(config.values) do
+            self.values[k] = v
+            -- Note: If 'v' is ever another table, you'd need a deep copy function here instead!
+        end
+    end
+
+    return self
+end
+
+-- based on config values
+function M:get_description()
+    local config = settings.rings[self.config_id]
+    return text_utils.interpolate(config.description, config.values)
+end
+
+-- based on merged state and config values (state values in priority)
+function M:get_dynamic_description()
+    local config = settings.rings[self.config_id]
+    local merged = {}
+    for k, v in pairs(config.values or {}) do merged[k] = v end
+    for k, v in pairs(self.values or {}) do merged[k] = v end
+
+    return text_utils.interpolate(config.description, merged)
+end
+
+return M

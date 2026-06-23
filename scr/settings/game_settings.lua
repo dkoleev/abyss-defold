@@ -49,29 +49,33 @@ M.effects = {
 }
 
 --======================== RINGS ================================================
+-- description: show by text_utils.interpolate(description, values) if static (not need dynamic values from state)
 
 M.rings = {
     footmen = {
+        id = "footmen",
         order = 1,
         rarity = ring_rarity.common,
         name = "Ring of Footmen",
-        description = "+%d BD for every Damned-tier symbol landed this spin.",
+        description = "+{bd_per_dagger} BD for every Damned-tier symbol landed this spin.",
         cost = 3,
         values = { bd_per_dagger = 2 },
     },
     watcher = {
+        id = "watcher",
         order = 2,
         rarity = ring_rarity.common,
         name = "Ring of the Watcher",
-        description = "+%d SoulsMult every 3 spins (caps at +%d).",
+        description = "+{mult_step} SoulsMult every {spin_interval} spins (caps at +{cap}).",
         cost = 4,
         values = { mult_step = 1, spin_interval = 3, cap = 5 },
     },
     frail_iron = {
+        id = "frail_iron",
         order = 5,
         rarity = ring_rarity.common,
         name = "Ring of Frail Iron",
-        description = "+%d DamageMult, but -%d max Ring slot.",
+        description = "+{dmg_mult} DamageMult, but -{slot_penalty} max Ring slot.",
         cost = 5,
         values = { dmg_mult = 1, slot_penalty = 1 },
     },

@@ -5,6 +5,11 @@ local M = {}
 
 M.battle = {
     damned_factory_url = "/factories#damned_factory",
+    durations = {
+        add_symbol_value_to_result = 0.2,
+        add_ring_value_to_result = 0.2,
+        apply_damage_to_damned = 1
+    }
 }
 
 M.player = {

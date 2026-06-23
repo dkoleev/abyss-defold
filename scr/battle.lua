@@ -50,7 +50,7 @@ local function load_level(self)
     })
 end
 
-local function apply_symbols(self, symbols_apply_data, index, on_complete)
+local function apply_symbols(self, symbols_apply_data, index, context, on_complete)
     if self.damned_model.is_dead then
         if on_complete then
             on_complete()
@@ -72,12 +72,23 @@ local function apply_symbols(self, symbols_apply_data, index, on_complete)
     local symbol = symbols_apply_data[index]
     local effect_config = settings.effects[symbol.effect_id]
 
-    -- Apply the current symbol effect
-    self.damned_model:apply_effect(symbol.effect_id, symbol.value)
+    local symbol_context = {
+        symbol = symbol,
+        bd     = 0,
+    }
 
-    timer.delay(effect_config.duration, false, function()
+    rings_runner.fire_event(self.rings, "on_symbol_resolved", symbol_context)
+
+
+    -- Apply the current symbol effect
+    -- self.damned_model:apply_effect(symbol.effect_id, symbol.value)
+
+    context.dmg = context.dmg + symbol.value + symbol_context.bd
+
+    -- TODO: apply symbol value effect
+    timer.delay(settings.battle.durations.add_symbol_value_to_result, false, function()
         -- Pass self to maintain context if needed
-        apply_symbols(self, symbols_apply_data, index + 1, on_complete)
+        apply_symbols(self, symbols_apply_data, index + 1, context, on_complete)
     end)
 end
 
@@ -122,10 +133,10 @@ handlers[STATES.APPLY_RINGS] = function(self, outcome)
 
     rings_runner.fire_event(self.rings, "on_spin_end", context)
 
-    transition(STATES.APPLY_SYMBOLS, self, outcome)
+    transition(STATES.APPLY_SYMBOLS, self, outcome, context)
 end
 
-handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
+handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
     self.damned_model.on_dead = function()
         transition(STATES.PLAYER_WON, self)
     end
@@ -134,11 +145,17 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
         transition(STATES.PLAYER_LOST, self)
     end
 
-    apply_symbols(self, outcome, 1, function()
-        if not self.damned_model.is_dead and
-            not self.player_model.is_dead then
-            transition(STATES.DAMNED_ATTACK, self)
-        end
+    apply_symbols(self, outcome, 1, context, function()
+        local final_damage = context.dmg * context.dmg_mult
+        log:debug("final damage applied to damned: " .. final_damage)
+        self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)
+   
+        timer.delay(settings.battle.durations.apply_damage_to_damned, false, function()
+            if not self.damned_model.is_dead and
+                not self.player_model.is_dead then
+                transition(STATES.DAMNED_ATTACK, self)
+            end
+        end)
     end)
 end
 

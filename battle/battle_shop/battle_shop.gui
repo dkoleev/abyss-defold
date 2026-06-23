@@ -18,6 +18,8 @@ nodes {
   adjust_mode: ADJUST_MODE_STRETCH
   inherit_alpha: true
   alpha: 0.68
+  enabled: false
+  visible: false
 }
 nodes {
   size {

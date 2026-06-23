@@ -9,6 +9,7 @@ local proxy_loader           = require("scr.utils.proxy_loader")
 local input_names            = require("scr.const.input_names")
 local log                    = require("log.log")
 local global_urls            = require("scr.const.global_urls")
+local rings_runner           = require("scr.ring_runner")
 
 local M                      = {}
 M.__index                    = M
@@ -18,6 +19,7 @@ local handlers               = {}
 local STATES                 = {
     PREPARE_BATTLE = "prepare_battle",
     SPIN           = "spin",
+    APPLY_RINGS    = "apply_rings",
     APPLY_SYMBOLS  = "apply_symbols",
     DAMNED_ATTACK  = "damned_attack",
     CHECK_END      = "check_end",
@@ -95,21 +97,32 @@ handlers[STATES.PREPARE_BATTLE] = function(self)
     self.damned_url = damned_url
     self.damned_model = damned_prototype.new(damned_url, damned_config_id)
 
-    self.rings = {}
-
-    local test_ring = ring_prototype.new(msg.url(), settings.rings.footmen.id)
-    print(test_ring:get_description())
-    print(test_ring:get_dynamic_description())
+    -- Add start rings
+    -- TODO: setup through the shop
+    table.insert(self.rings, ring_prototype.new(msg.url(), settings.rings.footmen.id))
+    table.insert(self.rings, ring_prototype.new(msg.url(), settings.rings.watcher.id))
 
     transition(STATES.SPIN, self)
 end
 
 handlers[STATES.SPIN] = function(self)
     self.slot_machine_model.on_spin_done = function(outcome)
-        transition(STATES.APPLY_SYMBOLS, self, outcome)
+        transition(STATES.APPLY_RINGS, self, outcome)
     end
 
     self.slot_machine_model:spin()
+end
+
+handlers[STATES.APPLY_RINGS] = function(self, outcome)
+    local context = {
+        outcome = outcome,
+        dmg = 0,
+        dmg_mult = 1
+    }
+
+    rings_runner.fire_event(self.rings, "on_spin_end", context)
+
+    transition(STATES.APPLY_SYMBOLS, self, outcome)
 end
 
 handlers[STATES.APPLY_SYMBOLS] = function(self, outcome)
@@ -169,7 +182,8 @@ function M.new()
         slot_machine_url   = nil,
         slot_machine_model = nil,
         player_url         = nil,
-        player_model       = nil
+        player_model       = nil,
+        rings              = {}
     }, M)
 
     return self

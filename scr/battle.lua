@@ -32,12 +32,24 @@ local function transition(new_state, ...)
     handlers[new_state](...)
 end
 
-local function spawn_damned()
+local function spawn_damned(self)
     local damned_id = settings.damned_spawn_pool[math.random(#settings.damned_spawn_pool)]
     local damned_config = settings.damned[damned_id];
     local damned_url = factory.create(damned_config.factory_url)
 
-    return damned_url, damned_id
+    self.damned_url = damned_url
+    self.damned_model = damned_prototype.new(damned_url, damned_id)
+end
+
+local function add_ring(self, ring_id)
+    local root_pos = go.get_position("/rings_root")
+    local current_rings_count = #self.rings
+    local pos = vmath.vector3(root_pos.x + 30 * current_rings_count, root_pos.y, root_pos.z)
+
+    local config = settings.rings[ring_id]
+    local url = factory.create(config.factory_url, pos)
+
+    table.insert(self.rings, ring_prototype.new(url, ring_id))
 end
 
 local function load_level(self)
@@ -92,10 +104,6 @@ local function apply_symbols(self, symbols_apply_data, index, context, on_comple
     end)
 end
 
-local function add_ring(self, ring_id)
-    table.insert(self.rings, ring_prototype.new(msg.url(), ring_id))
-end
-
 
 handlers[STATES.PREPARE_BATTLE] = function(self)
     load_level()
@@ -108,9 +116,7 @@ handlers[STATES.PREPARE_BATTLE] = function(self)
         self.slot_machine_url,
         settings.slot_machine.default_reels_count)
 
-    local damned_url, damned_config_id = spawn_damned()
-    self.damned_url = damned_url
-    self.damned_model = damned_prototype.new(damned_url, damned_config_id)
+    spawn_damned(self)
 
     -- Add start rings
     -- TODO: setup through the shop

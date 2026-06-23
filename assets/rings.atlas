@@ -1,0 +1,4 @@
+images {
+  image: "/assets/symbols/symbol_green_drop.png"
+}
+extrude_borders: 2

@@ -15,6 +15,7 @@ scale_along_z: 0
 embedded_instances {
   id: "root"
   children: "player"
+  children: "rings_root"
   children: "slot_machine"
   data: "components {\n"
   "  id: \"battle\"\n"
@@ -28,7 +29,6 @@ embedded_instances {
 embedded_instances {
   id: "slot_machine"
   children: "bg"
-  children: "rings_root"
   data: "components {\n"
   "  id: \"slot_machine\"\n"
   "  component: \"/battle/slot_machine.script\"\n"
@@ -143,30 +143,6 @@ embedded_instances {
   ""
 }
 embedded_instances {
-  id: "rings_root"
-  data: "embedded_components {\n"
-  "  id: \"sprite\"\n"
-  "  type: \"sprite\"\n"
-  "  data: \"default_animation: \\\"coin\\\"\\n"
-  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
-  "size {\\n"
-  "  x: 32.0\\n"
-  "  y: 32.0\\n"
-  "}\\n"
-  "size_mode: SIZE_MODE_MANUAL\\n"
-  "textures {\\n"
-  "  sampler: \\\"texture_sampler\\\"\\n"
-  "  texture: \\\"/assets/symbols_opt2.atlas\\\"\\n"
-  "}\\n"
-  "\"\n"
-  "}\n"
-  ""
-  position {
-    y: -33.0
-    z: 0.1
-  }
-}
-embedded_instances {
   id: "player"
   data: "components {\n"
   "  id: \"player\"\n"
@@ -181,4 +157,21 @@ embedded_instances {
   "  component: \"/battle/battle_shop/battle_shop.gui\"\n"
   "}\n"
   ""
+}
+embedded_instances {
+  id: "rings_factories"
+  data: "embedded_components {\n"
+  "  id: \"ring_1_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle/rings/ring_1.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "rings_root"
+  data: ""
+  position {
+    y: -186.0
+  }
 }

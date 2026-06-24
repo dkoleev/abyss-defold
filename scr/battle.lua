@@ -159,7 +159,7 @@ end
 
 handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
     self.damned_model.on_dead = function()
-        self.damned_model = nil
+        -- self.damned_model = nil
         transition(STATES.PLAYER_WON, self)
     end
 

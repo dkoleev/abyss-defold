@@ -1,0 +1,5 @@
+font: "/assets/fonts/m6x11plus.ttf"
+material: "/builtins/fonts/font-fnt.material"
+size: 18
+antialias: 0
+characters: " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"

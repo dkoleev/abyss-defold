@@ -1,4 +1,4 @@
 images {
-  image: "/assets/symbols/symbol_green_drop.png"
+  image: "/assets/rings/ring_sample.png"
 }
 extrude_borders: 2

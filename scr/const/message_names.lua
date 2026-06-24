@@ -69,6 +69,7 @@ M.attack                 = hash("attack")
 M.damned_attack_finished = hash("damned_attack_finished")
 M.damned_attack_apply    = hash("damned_attack_apply")
 M.apply_effect           = hash("apply_effect")
+M.player_damage_changed  = hash("player_damage_changed")
 
 -- ─── Slots ────────────────────────────────────────────────────────────────────
 

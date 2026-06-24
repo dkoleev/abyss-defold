@@ -55,7 +55,7 @@ end
 
 -- example: remove_ring(self, settings.rings.footmen.id)
 local function remove_ring(self, ring_id)
-    local ring, ring_index = table_utils.find(self.rings, function(ring, i) 
+    local ring, ring_index = table_utils.find(self.rings, function(ring, i)
         return ring.config_id == ring_id
     end)
 
@@ -169,10 +169,12 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
 
     apply_symbols(self, outcome, 1, context, function()
         local final_damage = context.dmg * context.dmg_mult
+        msg.post(self.url, MN.player_damage_changed, { value = final_damage, with_animation = true })
         log:debug("final damage applied to damned: " .. final_damage)
         self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)
 
         timer.delay(settings.battle.durations.apply_damage_to_damned, false, function()
+            msg.post(self.url, MN.player_damage_changed, { value = 0, with_animation = false })
             if not self.damned_model.is_dead and
                 not self.player_model.is_dead then
                 transition(STATES.DAMNED_ATTACK, self)

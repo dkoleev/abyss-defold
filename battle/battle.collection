@@ -2,6 +2,9 @@ name: "battle"
 instances {
   id: "camera"
   prototype: "/orthographic/camera.go"
+  position {
+    y: -134.0
+  }
   component_properties {
     id: "script"
     properties {
@@ -24,11 +27,13 @@ embedded_instances {
   ""
   position {
     x: -1.0
+    y: -61.0
   }
 }
 embedded_instances {
   id: "slot_machine"
   children: "bg"
+  children: "symbols_root"
   data: "components {\n"
   "  id: \"slot_machine\"\n"
   "  component: \"/battle/slot_machine.script\"\n"
@@ -170,7 +175,25 @@ embedded_instances {
 }
 embedded_instances {
   id: "rings_root"
-  data: ""
+  data: "embedded_components {\n"
+  "  id: \"gloves\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"glove_005_64x64\\\"\\n"
+  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/assets/gloves.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "  position {\n"
+  "    y: -25.0\n"
+  "  }\n"
+  "  scale {\n"
+  "    x: 2.0\n"
+  "    y: 2.0\n"
+  "  }\n"
+  "}\n"
+  ""
   position {
     y: -186.0
   }
@@ -230,4 +253,8 @@ embedded_instances {
     x: 62.0
     y: -8.0
   }
+}
+embedded_instances {
+  id: "symbols_root"
+  data: ""
 }

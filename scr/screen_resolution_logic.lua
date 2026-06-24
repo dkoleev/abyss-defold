@@ -29,15 +29,15 @@ M.RESOLUTIONS_LANDSCAPE = {
 }
 
 M.RESOLUTIONS_PORTRAIT = {
-    { width = 1280, height = 720 },
-    { width = 1600, height = 900 },
-    { width = 1920, height = 1080 },
-    { width = 2560, height = 1440 },
-    { width = 3840, height = 2160 },
+    { height = 1280, width = 720 },
+    { height = 1600, width = 900 },
+    { height = 1920, width = 1080 },
+    { height = 2560, width = 1440 },
+    { height = 3840, width = 2160 },
 }
 
 local DEFAULT_SETTINGS = {
-    resolution_index = 3, -- defaults to 1920x1080
+    resolution_index = 3,      -- defaults to 1920x1080
     display_mode = "windowed", -- "windowed", "windowed_fullscreen", "fullscreen"
 }
 
@@ -64,7 +64,6 @@ function M.apply()
 
     if current.display_mode == "fullscreen" then
         defos.set_fullscreen(true)
-
     elseif current.display_mode == "windowed_fullscreen" then
         defos.set_fullscreen(false)
         local displays = defos.get_displays()

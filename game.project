@@ -5,9 +5,12 @@ main_collection = /bootstrap/bootstrap.collectionc
 shared_state = 1
 
 [display]
-width = 1280
-height = 720
+width = 720
+height = 1280
 high_dpi = 1
+fullscreen = 0
+vsync = 1
+display_device_info = 0
 
 [android]
 input_method = HiddenInputField
@@ -26,9 +29,11 @@ dependencies#1 = https://github.com/britzl/defold-orthographic/archive/refs/tags
 dependencies#2 = https://github.com/Insality/druid/archive/refs/tags/1.2.3.zip
 dependencies#3 = https://github.com/Insality/defold-log/archive/refs/tags/6.zip
 dependencies#4 = https://github.com/Insality/defold-tweener/archive/refs/tags/6.zip
+dependencies#5 = https://github.com/subsoap/defos/archive/refs/tags/v2.8.7.zip
 
 [sprite]
 subpixels = 0
+max_count = 256
 
 [graphics]
 default_texture_min_filter = nearest

@@ -298,4 +298,3 @@ images {
 images {
   image: "/assets/rings_64x64/ring_100_64x64.png"
 }
-extrude_borders: 2

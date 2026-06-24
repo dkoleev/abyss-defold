@@ -40,4 +40,3 @@ animations {
   }
   playback: PLAYBACK_LOOP_FORWARD
 }
-extrude_borders: 2

@@ -328,4 +328,3 @@ images {
 images {
   image: "/assets/rings_32x32/ring_110_32x32.png"
 }
-extrude_borders: 2

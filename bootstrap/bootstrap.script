@@ -1,17 +1,21 @@
 local MN = require("scr.const.message_names")
 local proxy_loader = require("scr.utils.proxy_loader")
+local screen_resolution = require("scr.screen_resolution_logic")
 
 local battle_collection_proxy_url = "/proxies#battle_collectionproxy"
 
 function init(self)
 	math.randomseed(socket.gettime())
 
+	screen_resolution.load()
+	screen_resolution.apply()
+
 	-- save_system.load()
 
 	proxy_loader.load(battle_collection_proxy_url, {
 		enable = true,
 		acquire_input = true,
-		on_loaded = function (url)
+		on_loaded = function(url)
 			print(tostring(url) .. " was loaded.")
 		end
 	})

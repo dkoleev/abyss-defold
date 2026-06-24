@@ -36,14 +36,16 @@ end
 local function spawn_damned(self)
     local damned_id = settings.damned_spawn_pool[math.random(#settings.damned_spawn_pool)]
     local damned_config = settings.damned[damned_id];
-    local damned_url = factory.create(damned_config.factory_url)
+    local pos = go.get_world_position(global_urls.damned_spawn_point())
+
+    local damned_url = factory.create(damned_config.factory_url, pos)
 
     self.damned_url = damned_url
     self.damned_model = damned_prototype.new(damned_url, damned_id)
 end
 
 local function add_ring(self, ring_id)
-    local root_pos = go.get_position("/rings_root")
+    local root_pos = go.get_world_position("/rings_root")
     local current_rings_count = #self.rings
     local pos = vmath.vector3(root_pos.x + 30 * current_rings_count, root_pos.y, root_pos.z)
 

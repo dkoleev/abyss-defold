@@ -1,7 +1,7 @@
 name: "battle"
 instances {
-  id: "camera"
-  prototype: "/orthographic/camera.go"
+  id: "battle_camera"
+  prototype: "/battle/battle_camera.go"
   position {
     y: -134.0
   }
@@ -17,6 +17,7 @@ instances {
 scale_along_z: 0
 embedded_instances {
   id: "root"
+  children: "damned_spawn_point"
   children: "player"
   children: "rings_root"
   children: "slot_machine"
@@ -27,7 +28,7 @@ embedded_instances {
   ""
   position {
     x: -1.0
-    y: -61.0
+    y: -101.0
   }
 }
 embedded_instances {
@@ -186,7 +187,8 @@ embedded_instances {
   "}\\n"
   "\"\n"
   "  position {\n"
-  "    y: -25.0\n"
+  "    y: -57.0\n"
+  "    z: -0.01\n"
   "  }\n"
   "  scale {\n"
   "    x: 2.0\n"
@@ -195,7 +197,8 @@ embedded_instances {
   "}\n"
   ""
   position {
-    y: -186.0
+    y: -153.0
+    z: 0.2
   }
 }
 embedded_instances {
@@ -251,10 +254,17 @@ embedded_instances {
   ""
   position {
     x: 62.0
-    y: -8.0
+    y: -113.0
   }
 }
 embedded_instances {
   id: "symbols_root"
   data: ""
+}
+embedded_instances {
+  id: "damned_spawn_point"
+  data: ""
+  position {
+    y: 15.0
+  }
 }

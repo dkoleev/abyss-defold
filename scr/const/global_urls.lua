@@ -12,4 +12,12 @@ function M.player()
     return msg.url("/player#player")
 end
 
+function M.damned_spawn_point()
+    return msg.url("/damned_spawn_point")
+end
+
+function M.symbols_root()
+    return msg.url("/symbols_root")
+end
+
 return M

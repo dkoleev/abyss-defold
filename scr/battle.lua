@@ -10,6 +10,7 @@ local input_names            = require("scr.const.input_names")
 local log                    = require("log.log")
 local global_urls            = require("scr.const.global_urls")
 local rings_runner           = require("scr.ring_runner")
+local table_utils            = require("scr.utils.table_utils")
 
 local M                      = {}
 M.__index                    = M
@@ -52,8 +53,14 @@ local function add_ring(self, ring_id)
     table.insert(self.rings, ring_prototype.new(url, ring_id))
 end
 
+-- example: remove_ring(self, settings.rings.footmen.id)
 local function remove_ring(self, ring_id)
-    
+    local ring, ring_index = table_utils.find(self.rings, function(ring, i) 
+        return ring.config_id == ring_id
+    end)
+
+    table.remove(self.rings, ring_index)
+    ring:delete()
 end
 
 local function load_level(self)
@@ -164,7 +171,7 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
         local final_damage = context.dmg * context.dmg_mult
         log:debug("final damage applied to damned: " .. final_damage)
         self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)
-   
+
         timer.delay(settings.battle.durations.apply_damage_to_damned, false, function()
             if not self.damned_model.is_dead and
                 not self.player_model.is_dead then

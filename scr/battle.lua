@@ -52,6 +52,10 @@ local function add_ring(self, ring_id)
     table.insert(self.rings, ring_prototype.new(url, ring_id))
 end
 
+local function remove_ring(self, ring_id)
+    
+end
+
 local function load_level(self)
     proxy_loader.load(settings.levels.level_0.factory_url, {
         enable = true,
@@ -148,6 +152,7 @@ end
 
 handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
     self.damned_model.on_dead = function()
+        self.damned_model = nil
         transition(STATES.PLAYER_WON, self)
     end
 

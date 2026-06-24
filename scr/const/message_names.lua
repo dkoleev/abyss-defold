@@ -60,6 +60,7 @@ M.acquire_camera_focus   = hash("acquire_camera_focus")
 M.release_camera_focus   = hash("release_camera_focus")
 
 -- ─── Game Custom ──────────────────────────────────────────────────────────────
+M.delete                 = hash("delete")
 M.take_damage            = hash("take_damage")
 M.dead                   = hash("dead")
 M.enter_fight            = hash("enter_fight")

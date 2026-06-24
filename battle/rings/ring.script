@@ -1,3 +1,11 @@
+local MN = require("scr.const.message_names")
+
 function init(self)
-	
+
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == MN.delete then
+		go.delete()
+	end
 end

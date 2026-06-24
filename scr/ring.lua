@@ -1,5 +1,6 @@
 local text_utils = require("scr.utils.text_utils")
 local settings   = require("scr.settings.game_settings")
+local MN = require("scr.const.message_names")
 
 local M          = {}
 M.__index        = M
@@ -24,6 +25,10 @@ function M.new(url, config_id)
     -- end
 
     return self
+end
+
+function M:delete()
+    msg.post(self.url, MN.delete)
 end
 
 -- based on config values

@@ -1,4 +1,0 @@
-images {
-  image: "/assets/rings/ring_sample.png"
-}
-extrude_borders: 2

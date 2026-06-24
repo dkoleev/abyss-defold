@@ -5,8 +5,8 @@ main_collection = /bootstrap/bootstrap.collectionc
 shared_state = 1
 
 [display]
-width = 720
-height = 1280
+width = 1280
+height = 720
 high_dpi = 1
 
 [android]

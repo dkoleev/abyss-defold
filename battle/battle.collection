@@ -169,7 +169,7 @@ embedded_instances {
   data: "embedded_components {\n"
   "  id: \"ring_1_factory\"\n"
   "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/battle/rings/ring_1.go\\\"\\n"
+  "  data: \"prototype: \\\"/battle/rings/rings_opt1/ring_1_opt1.go\\\"\\n"
   "\"\n"
   "}\n"
   ""

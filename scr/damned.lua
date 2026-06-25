@@ -12,6 +12,7 @@ function M.new(url, config_id)
 
     local config         = settings.damned[config_id];
     self.url             = url
+    self.url_gui         = msg.url("/gui#battle")
     self.max_health      = config.health
     self.health          = config.health
     self.p_dmg           = config.p_dmg
@@ -20,6 +21,8 @@ function M.new(url, config_id)
     self.on_attack_done  = nil
     self.on_attack_apply = nil
     self.on_dead         = nil
+
+    msg.post(self.url_gui, MN.set_progress, { value = 1 })
 
     return self
 end
@@ -37,6 +40,9 @@ function M:get_damage(amount)
 
     self.health = math.max(0, self.health - amount)
 
+    local progress_01 = self.health / self.max_health
+    msg.post(self.url_gui, MN.set_progress, { value = progress_01 })
+
     log:debug("Get damage:" .. amount .. ". Current health: " .. self.health)
     if self.health <= 0 then
         self.is_dead = true
@@ -47,7 +53,7 @@ function M:get_damage(amount)
             self.on_dead()
         end
     else
-        msg.post(self.url, MN.take_damage)
+        msg.post(self.url, MN.take_damage, { value = amount })
     end
 end
 

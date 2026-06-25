@@ -184,17 +184,25 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, score_state)
         msg.post(self.url, MN.player_damage_changed, { value = score_state.wounds, with_animation = true })
         msg.post(self.url, MN.player_damage_mult_changed, { value = score_state.mult, with_animation = true })
 
-        log:debug("final damage applied to damned: " .. final_damage)
-        self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)
+        timer.delay(0.3, false, function()
+            msg.post(self.url, MN.player_final_damage_changed, { value = final_damage, with_animation = true })
 
-        timer.delay(settings.battle.durations.apply_damage_to_damned, false, function()
-            msg.post(self.url, MN.player_damage_changed, { value = 0, with_animation = false })
-            msg.post(self.url, MN.player_damage_mult_changed, { value = 0, with_animation = false })
+            timer.delay(0.3, false, function()
+                log:debug("final damage applied to damned: " .. final_damage)
 
-            if not self.damned_model.is_dead and
-                not self.player_model.is_dead then
-                transition(STATES.DAMNED_ATTACK, self)
-            end
+                self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)
+
+                timer.delay(settings.battle.durations.apply_damage_to_damned, false, function()
+                    msg.post(self.url, MN.player_damage_changed, { value = 0, with_animation = false })
+                    msg.post(self.url, MN.player_damage_mult_changed, { value = 0, with_animation = false })
+                    msg.post(self.url, MN.player_final_damage_changed, { value = 0, with_animation = false })
+
+                    if not self.damned_model.is_dead and
+                        not self.player_model.is_dead then
+                        transition(STATES.DAMNED_ATTACK, self)
+                    end
+                end)
+            end)
         end)
     end)
 end

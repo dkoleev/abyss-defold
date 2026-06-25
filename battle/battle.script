@@ -8,16 +8,18 @@ local BUMP_DURATION = 0.15
 local SETTLE_DURATION = 0.2
 local COUNT_DURATION = 0.2
 
+local function format_mult(value)
+	if value == math.floor(value) then
+		return tostring(math.floor(value))
+	else
+		return string.format("%.1f", value)
+	end
+end
+
 local function set_player_damage(self, value)
 	go.cancel_animations(self.player_damage_label_url, "scale")
 	label.set_text(self.player_damage_label_url, tostring(value))
 end
-
-local function set_player_damage_mult(self, value)
-	go.cancel_animations(self.player_damage_mult_label_url, "scale")
-	label.set_text(self.player_damage_mult_label_url, tostring(value))
-end
-
 
 local function set_player_damage_anim(self, value)
 	local label_url = self.player_damage_label_url
@@ -39,6 +41,11 @@ local function set_player_damage_anim(self, value)
 		end)
 end
 
+local function set_player_damage_mult(self, value)
+	go.cancel_animations(self.player_damage_mult_label_url, "scale")
+	label.set_text(self.player_damage_mult_label_url, format_mult(value))
+end
+
 local function set_player_damage_mult_anim(self, value)
 	local label_url = self.player_damage_mult_label_url
 	local from_value = self.displayed_damage_mult or 0
@@ -50,6 +57,31 @@ local function set_player_damage_mult_anim(self, value)
 
 	self.count_mult_tween = tweener.tween(gui.EASING_OUTCIRC, from_value, value, COUNT_DURATION,
 		function(value, is_final_call)
+			label.set_text(label_url, format_mult(value))
+
+			if is_final_call then
+				go.set(label_url, "scale", BUMP_SCALE)
+				go.animate(label_url, "scale", go.PLAYBACK_ONCE_FORWARD, NORMAL_SCALE, go.EASING_OUTBOUNCE, 0.5)
+			end
+		end)
+end
+
+local function set_player_final_damage(self, value)
+	go.cancel_animations(self.player_final_damage_label_url, "scale")
+	label.set_text(self.player_final_damage_label_url, tostring(value))
+end
+
+local function set_player_final_damage_anim(self, value)
+	local label_url = self.player_final_damage_label_url
+	local from_value = self.displayed_damage_final or 0
+	self.displayed_damage_final = value
+
+	-- cancel any in-flight tween/animation so rapid updates don't conflict
+	tweener.cancel(self.count_final_tween)
+	go.cancel_animations(label_url, "scale")
+
+	self.count_final_tween = tweener.tween(gui.EASING_OUTCIRC, from_value, value, COUNT_DURATION,
+		function(value, is_final_call)
 			label.set_text(label_url, math.floor(value + 0.5))
 
 			if is_final_call then
@@ -59,19 +91,23 @@ local function set_player_damage_mult_anim(self, value)
 		end)
 end
 
+
 function init(self)
 	msg.post(".", MN.acquire_input_focus)
 
 	self.model = model.new()
 	self.model:start()
 
-	self.player_damage_label_url = msg.url("/damage_root#player_damage_text")
+	self.player_damage_label_url = msg.url("/damage_root#player_wounds_text")
 	self.player_damage_mult_label_url = msg.url("/damage_root#player_damage_mult_text")
+	self.player_final_damage_label_url = msg.url("/damage_root#player_final_damage_text")
 	self.displayed_damage = 0
 	self.displayed_damage_mult = 0
+	self.displayed_damage_final = 0
 
 	label.set_text(self.player_damage_label_url, "0")
 	label.set_text(self.player_damage_mult_label_url, "0")
+	label.set_text(self.player_final_damage_label_url, "0")
 end
 
 function on_input(self, action_id, action)
@@ -95,10 +131,19 @@ function on_message(self, message_id, message, sender)
 		end
 	end
 
+	if message_id == MN.player_final_damage_changed then
+		if message.with_animation then
+			set_player_final_damage_anim(self, message.value)
+		else
+			set_player_final_damage(self, message.value)
+		end
+	end
+
 	self.model:on_message(message_id, message, sender)
 end
 
 function final(self)
 	tweener.cancel(self.count_tween)
 	tweener.cancel(self.count_mult_tween)
+	tweener.cancel(self.count_final_tween)
 end

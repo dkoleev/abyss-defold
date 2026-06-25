@@ -1,48 +1,52 @@
 local druid = require("druid.druid")
 local MN = require("scr.const.message_names")
 
-local LERP_DELAY = 0.5      -- pause before back layer starts moving
-local BACK_DURATION = 0.2   -- slow drain duration
+local LERP_DELAY = 0.5     -- pause before back layer starts moving
+local BACK_DURATION = 0.2  -- slow drain duration
 local FRONT_DURATION = 0.1 -- fast snap duration
 
 local function resize(node, width)
-	local size = gui.get_size(node)
-	size.x = width
-	gui.set_size(node, size)
+    local size = gui.get_size(node)
+    size.x = width
+    gui.set_size(node, size)
 end
 
 local function set_progress(self, value, skip_animation)
-	value = math.max(0, math.min(1, value))
-	local old_value = self.current_value
-	self.current_value = value
+    value = math.max(0, math.min(1, value))
+    local old_value = self.current_value
+    self.current_value = value
 
-	local target_width = self.full_width * value
+    local target_width = self.full_width * value
 
-	if skip_animation then
-		resize(self.clip_front, target_width)
-		resize(self.clip_back, target_width)
-		return
-	end
+    if skip_animation then
+        resize(self.clip_front, target_width)
+        resize(self.clip_back, target_width)
+        return
+    end
 
-	if value < old_value then
-		-- LOSING fill: front snaps fast, back lags behind then drains
-		gui.animate(self.clip_front, gui.PROP_SIZE,
-			vmath.vector3(target_width, gui.get_size(self.clip_front).y, 0),
-			gui.EASING_OUTQUAD, FRONT_DURATION)
+    if value < old_value then
+        -- LOSING fill: front snaps fast, back lags behind then drains
+        gui.animate(self.clip_front, gui.PROP_SIZE,
+            vmath.vector3(target_width, gui.get_size(self.clip_front).y, 0),
+            gui.EASING_OUTQUAD, FRONT_DURATION)
 
-		-- back waits, then slowly drains down to match
-		timer.delay(LERP_DELAY, false, function()
-			gui.animate(self.clip_back, gui.PROP_SIZE,
-				vmath.vector3(target_width, gui.get_size(self.clip_back).y, 0),
-				gui.EASING_INOUTQUAD, BACK_DURATION)
-		end)
-	else
-		-- GAINING fill: snap both up together (or animate front, snap back)
-		gui.animate(self.clip_front, gui.PROP_SIZE,
-			vmath.vector3(target_width, gui.get_size(self.clip_front).y, 0),
-			gui.EASING_OUTQUAD, FRONT_DURATION)
-		resize(self.clip_back, target_width)
-	end
+        if self.back_timer_handle then
+            timer.cancel(self.back_timer_handle)
+        end
+
+        -- back waits, then slowly drains down to match
+        self.back_timer_handle = timer.delay(LERP_DELAY, false, function()
+            gui.animate(self.clip_back, gui.PROP_SIZE,
+                vmath.vector3(target_width, gui.get_size(self.clip_back).y, 0),
+                gui.EASING_OUTCUBIC, BACK_DURATION)
+        end)
+    else
+        -- GAINING fill: snap both up together (or animate front, snap back)
+        gui.animate(self.clip_front, gui.PROP_SIZE,
+            vmath.vector3(target_width, gui.get_size(self.clip_front).y, 0),
+            gui.EASING_OUTQUAD, FRONT_DURATION)
+        resize(self.clip_back, target_width)
+    end
 end
 
 -- local function set_progress(self, value)
@@ -61,42 +65,46 @@ end
 -- end
 
 function init(self)
-	self.druid = druid.new(self)
+    self.druid = druid.new(self)
 
-	-- self.progress = self.druid:new_progress("damned_progress_fill", "x")
+    -- self.progress = self.druid:new_progress("damned_progress_fill", "x")
 
-	self.current_value = 1.0
-	self.full_width = gui.get_size(gui.get_node("damned_progress_clip")).x
-	self.clip_front = gui.get_node("damned_progress_clip")
-	self.clip_back = gui.get_node("damned_progress_clip_back")
+    self.current_value = 1.0
+    self.full_width = gui.get_size(gui.get_node("damned_progress_clip")).x
+    self.clip_front = gui.get_node("damned_progress_clip")
+    self.clip_back = gui.get_node("damned_progress_clip_back")
 
-	set_progress(self, self.current_value, true) -- start full
+    set_progress(self, self.current_value, true) -- start full
 end
 
 function final(self)
-	self.druid:final()
+    self.druid:final()
+
+    if self.back_timer_handle then
+        timer.cancel(self.back_timer_handle)
+    end
 end
 
 function update(self, dt)
-	self.druid:update(dt)
+    self.druid:update(dt)
 end
 
 function on_message(self, message_id, message, sender)
-	self.druid:on_message(message_id, message, sender)
+    self.druid:on_message(message_id, message, sender)
 
-	if message_id == MN.set_progress then
-		set_progress(self, message.value, message.duration == nil)
-		-- set_progress(self, message.value)
-		-- animate_progress(self, message.value, message.duration)
+    if message_id == MN.set_progress then
+        set_progress(self, message.value, message.duration == nil)
+        -- set_progress(self, message.value)
+        -- animate_progress(self, message.value, message.duration)
 
-		-- if message.duration then
-		--     self.progress:to(message.value, message.duration)
-		-- else
-		-- self.progress:set_to(message.value)
-		-- end
-	end
+        -- if message.duration then
+        --     self.progress:to(message.value, message.duration)
+        -- else
+        -- self.progress:set_to(message.value)
+        -- end
+    end
 end
 
 function on_input(self, action_id, action)
-	return self.druid:on_input(action_id, action)
+    return self.druid:on_input(action_id, action)
 end

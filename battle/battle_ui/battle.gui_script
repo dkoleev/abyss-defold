@@ -1,8 +1,8 @@
 local druid = require("druid.druid")
 local MN = require("scr.const.message_names")
 
-local LERP_DELAY = 0.5     -- pause before back layer starts moving
-local BACK_DURATION = 0.2  -- slow drain duration
+local LERP_DELAY = 0.3     -- pause before back layer starts moving
+local BACK_DURATION = 0.3  -- slow drain duration
 local FRONT_DURATION = 0.1 -- fast snap duration
 
 local function resize(node, width)
@@ -38,7 +38,7 @@ local function set_progress(self, value, skip_animation)
         self.back_timer_handle = timer.delay(LERP_DELAY, false, function()
             gui.animate(self.clip_back, gui.PROP_SIZE,
                 vmath.vector3(target_width, gui.get_size(self.clip_back).y, 0),
-                gui.EASING_OUTCUBIC, BACK_DURATION)
+                gui.EASING_INQUAD, BACK_DURATION)
         end)
     else
         -- GAINING fill: snap both up together (or animate front, snap back)
@@ -82,6 +82,7 @@ function final(self)
 
     if self.back_timer_handle then
         timer.cancel(self.back_timer_handle)
+        self.back_timer_handle = nil
     end
 end
 
@@ -93,7 +94,7 @@ function on_message(self, message_id, message, sender)
     self.druid:on_message(message_id, message, sender)
 
     if message_id == MN.set_progress then
-        set_progress(self, message.value, message.duration == nil)
+        set_progress(self, message.value, message.animate)
         -- set_progress(self, message.value)
         -- animate_progress(self, message.value, message.duration)
 

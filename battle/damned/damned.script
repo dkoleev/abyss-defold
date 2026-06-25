@@ -16,7 +16,7 @@ function on_message(self, message_id, message, sender)
 		go.animate(".",
 			"scale",
 			go.PLAYBACK_ONCE_PINGPONG,
-			vmath.vector3(0.5), go.EASING_INBACK, 0.5)
+			vmath.vector3(0.5), go.EASING_INBACK, 0.25)
 	end
 
 	if message_id == message_names.attack then

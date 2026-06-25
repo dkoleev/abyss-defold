@@ -41,7 +41,7 @@ function M:get_damage(amount)
     self.health = math.max(0, self.health - amount)
 
     local progress_01 = self.health / self.max_health
-    msg.post(self.url_gui, MN.set_progress, { value = progress_01, duration = 0.2 })
+    msg.post(self.url_gui, MN.set_progress, { value = progress_01, animate = false })
 
     log:debug("Get damage:" .. amount .. ". Current health: " .. self.health)
     if self.health <= 0 then

@@ -29,12 +29,12 @@ M.levels = {
 --======================= SYMBOLS ==============================================
 
 M.symbols = {
-    DAGGER = { id = "DAGGER", icon = "dagger", type = "attack", value = 15, effect_id = const.effects.p_dmg },
-    SHIELD = { id = "SHIELD", icon = "shield", type = "defend", value = 10, effect_id = const.effects.p_dmg },
+    DAGGER = { id = "DAGGER", icon = "dagger", type = "attack", value = 5, effect_id = const.effects.p_dmg },
+    SHIELD = { id = "SHIELD", icon = "shield", type = "defend", value = 3, effect_id = const.effects.p_dmg },
     COIN   = { id = "COIN", icon = "coin", type = "gold", value = 5, effect_id = const.effects.p_dmg },
-    POTION = { id = "POTION", icon = "potion", type = "heal", value = 20, effect_id = const.effects.p_dmg },
-    POISON = { id = "POISON", icon = "poison", type = "debuff", value = 8, effect_id = const.effects.p_dmg },
-    SKULL  = { id = "SKULL", icon = "skull", type = "attack", value = 30, effect_id = const.effects.p_dmg },
+    POTION = { id = "POTION", icon = "potion", type = "heal", value = 8, effect_id = const.effects.p_dmg },
+    POISON = { id = "POISON", icon = "poison", type = "debuff", value = 4, effect_id = const.effects.p_dmg },
+    SKULL  = { id = "SKULL", icon = "skull", type = "attack", value = 5, effect_id = const.effects.p_dmg },
 }
 
 -- Which symbols are in the player's reel pool (built via meta-progression)

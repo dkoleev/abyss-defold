@@ -306,3 +306,11 @@ embedded_instances {
     y: 15.0
   }
 }
+embedded_instances {
+  id: "gui"
+  data: "components {\n"
+  "  id: \"battle\"\n"
+  "  component: \"/battle/battle_ui/battle.gui\"\n"
+  "}\n"
+  ""
+}

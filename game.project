@@ -30,6 +30,7 @@ dependencies#2 = https://github.com/Insality/druid/archive/refs/tags/1.2.3.zip
 dependencies#3 = https://github.com/Insality/defold-log/archive/refs/tags/6.zip
 dependencies#4 = https://github.com/Insality/defold-tweener/archive/refs/tags/6.zip
 dependencies#5 = https://github.com/subsoap/defos/archive/refs/tags/v2.8.7.zip
+dependencies#6 = https://github.com/Insality/defold-event/archive/refs/tags/16.zip
 
 [sprite]
 subpixels = 0

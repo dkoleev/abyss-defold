@@ -1,3 +1,9 @@
+images {
+  image: "/assets/gui/health_bars/bossbar_fill.png"
+}
+images {
+  image: "/assets/gui/health_bars/bossbar_back.png"
+}
 animations {
   id: "square"
   images {

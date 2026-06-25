@@ -38,7 +38,8 @@ M.RESOLUTIONS_PORTRAIT = {
 
 local DEFAULT_SETTINGS = {
     resolution_index = 3,      -- defaults to 1920x1080
-    display_mode = "windowed_fullscreen", -- "windowed", "windowed_fullscreen", "fullscreen"
+    -- display_mode = "windowed_fullscreen", -- "windowed", "windowed_fullscreen", "fullscreen"
+    display_mode = "windowed", -- "windowed", "windowed_fullscreen", "fullscreen"
 }
 
 local current = nil

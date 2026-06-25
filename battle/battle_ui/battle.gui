@@ -39,6 +39,25 @@ nodes {
   inherit_alpha: true
 }
 nodes {
+  position {
+    x: 16.0
+  }
+  size {
+    x: 224.0
+    y: 64.0
+  }
+  type: TYPE_BOX
+  id: "damned_progress_clip"
+  pivot: PIVOT_W
+  parent: "damned_progress"
+  inherit_alpha: true
+  clipping_mode: CLIPPING_MODE_STENCIL
+  clipping_visible: false
+}
+nodes {
+  position {
+    x: -16.0
+  }
   size {
     x: 256.0
     y: 64.0
@@ -47,7 +66,7 @@ nodes {
   texture: "common/bossbar_fill"
   id: "damned_progress_fill"
   pivot: PIVOT_W
-  parent: "damned_progress"
+  parent: "damned_progress_clip"
   inherit_alpha: true
 }
 material: "/builtins/materials/gui.material"

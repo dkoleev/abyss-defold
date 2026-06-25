@@ -22,7 +22,7 @@ function M.new(url, config_id)
     self.on_attack_apply = nil
     self.on_dead         = nil
 
-    msg.post(self.url_gui, MN.set_progress, { value = 1 })
+    msg.post(self.url_gui, MN.set_progress, { value = 1.0 })
 
     return self
 end
@@ -41,7 +41,7 @@ function M:get_damage(amount)
     self.health = math.max(0, self.health - amount)
 
     local progress_01 = self.health / self.max_health
-    msg.post(self.url_gui, MN.set_progress, { value = progress_01 })
+    msg.post(self.url_gui, MN.set_progress, { value = progress_01, duration = 0.2 })
 
     log:debug("Get damage:" .. amount .. ". Current health: " .. self.health)
     if self.health <= 0 then

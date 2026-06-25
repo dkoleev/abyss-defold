@@ -1,11 +1,22 @@
 local druid = require("druid.druid")
 local MN = require("scr.const.message_names")
 
+local function set_progress(self, value)
+	value = math.max(0, math.min(1, value))
+	local size = gui.get_size(self.clip_node)
+	size.x = self.full_width * value
+	gui.set_size(self.clip_node, size)
+end
+
 function init(self)
     self.druid = druid.new(self)
 
-    self.progress = self.druid:new_progress("damned_progress_fill", "x")
-    self.progress:set_to(1)
+    -- self.progress = self.druid:new_progress("damned_progress_fill", "x")
+
+    self.full_width = gui.get_size(gui.get_node("damned_progress_clip")).x
+	self.clip_node = gui.get_node("damned_progress_clip")
+
+	set_progress(self, 1.0) -- start full
 end
 
 function final(self)
@@ -20,7 +31,12 @@ function on_message(self, message_id, message, sender)
     self.druid:on_message(message_id, message, sender)
 
     if message_id == MN.set_progress then
-        self.progress:set_to(message.value)
+        set_progress(self, message.value)
+        -- if message.duration then
+        --     self.progress:to(message.value, message.duration)
+        -- else
+            -- self.progress:set_to(message.value)
+        -- end
     end
 end
 

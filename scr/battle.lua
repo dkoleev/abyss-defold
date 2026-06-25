@@ -61,11 +61,16 @@ local function remove_ring(self, ring_id)
         return ring.config_id == ring_id
     end)
 
+    if not ring then
+        log:error("[BATTLE]: tried to remove ring not held: " .. tostring(ring_id))
+        return
+    end
+
     table.remove(self.rings, ring_index)
     ring:delete()
 end
 
-local function load_level(self)
+local function load_level()
     proxy_loader.load(settings.levels.level_0.factory_url, {
         enable = true,
         acquire_input = true,
@@ -75,7 +80,7 @@ local function load_level(self)
     })
 end
 
-local function apply_symbols(self, symbols_apply_data, index, context, on_complete)
+local function apply_symbols(self, symbols_apply_data, index, score_state, on_complete)
     if self.damned_model.is_dead then
         if on_complete then
             on_complete()
@@ -97,23 +102,22 @@ local function apply_symbols(self, symbols_apply_data, index, context, on_comple
     local symbol = symbols_apply_data[index]
     local effect_config = settings.effects[symbol.effect_id]
 
-    local symbol_context = {
+    local context = {
+        event = "on_symbol_resolved",
         symbol = symbol,
-        bd     = 0,
     }
 
-    rings_runner.fire_event(self.rings, "on_symbol_resolved", symbol_context)
+    score_state.wounds = score_state.wounds + symbol.value
 
+    rings_runner.fire_event(self.rings, context, score_state)
 
     -- Apply the current symbol effect
     -- self.damned_model:apply_effect(symbol.effect_id, symbol.value)
 
-    context.dmg = context.dmg + symbol.value + symbol_context.bd
-
     -- TODO: apply symbol value effect
     timer.delay(settings.battle.durations.add_symbol_value_to_result, false, function()
         -- Pass self to maintain context if needed
-        apply_symbols(self, symbols_apply_data, index + 1, context, on_complete)
+        apply_symbols(self, symbols_apply_data, index + 1, score_state, on_complete)
     end)
 end
 
@@ -133,8 +137,8 @@ handlers[STATES.PREPARE_BATTLE] = function(self)
 
     -- Add start rings
     -- TODO: setup through the shop
-    add_ring(self, settings.rings.footmen.id)
-    add_ring(self, settings.rings.watcher.id)
+    add_ring(self, settings.rings.skull_blood.id)
+    -- add_ring(self, settings.rings.watcher.id)
 
     transition(STATES.SPIN, self)
 end
@@ -149,17 +153,20 @@ end
 
 handlers[STATES.APPLY_RINGS] = function(self, outcome)
     local context = {
-        outcome = outcome,
-        dmg = 0,
-        dmg_mult = 1
+        event = "on_spin_end"
     }
 
-    rings_runner.fire_event(self.rings, "on_spin_end", context)
+    local score_state = {
+        mult = 1,
+        wounds = 0
+    }
 
-    transition(STATES.APPLY_SYMBOLS, self, outcome, context)
+    rings_runner.fire_event(self.rings, context, score_state)
+
+    transition(STATES.APPLY_SYMBOLS, self, outcome, score_state)
 end
 
-handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
+handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, score_state)
     self.damned_model.on_dead = function()
         -- self.damned_model = nil
         transition(STATES.PLAYER_WON, self)
@@ -169,11 +176,13 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, context)
         transition(STATES.PLAYER_LOST, self)
     end
 
-    apply_symbols(self, outcome, 1, context, function()
-        local final_damage = context.dmg * context.dmg_mult
+    apply_symbols(self, outcome, 1, score_state, function()
+        rings_runner.fire_event(self.rings, { event = "on_all_symbols_resolved" }, score_state)
 
-        msg.post(self.url, MN.player_damage_changed,{ value = context.dmg, with_animation = true })
-        msg.post(self.url, MN.player_damage_mult_changed,{ value = context.dmg_mult, with_animation = true })
+        local final_damage = score_state.wounds * score_state.mult
+
+        msg.post(self.url, MN.player_damage_changed, { value = score_state.wounds, with_animation = true })
+        msg.post(self.url, MN.player_damage_mult_changed, { value = score_state.mult, with_animation = true })
 
         log:debug("final damage applied to damned: " .. final_damage)
         self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)

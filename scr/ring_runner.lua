@@ -13,12 +13,15 @@ local M              = {}
 --   caller wants seeded before this pass (e.g. context.dmg_mult = 1),
 --   since apply_effect only initializes missing fields to a default
 --   (0 for additive, 1 for multiplicative) the first time they're touched.
-function M.fire_event(held_rings, context, score_state)
-
+function M.fire_event(event, held_rings, context, score_state)
+    if context == nil then
+        context = {}
+    end
+    
     for _, ring in ipairs(held_rings) do
         local behaviour = rings_behavior[ring.config_id]
         if behaviour then
-            local effect = behaviour(ring, context)
+            local effect = behaviour(event, ring, context)
             if effect then
                 -- THIS is the order-dependent part.
                 -- +mult effects: additive on the current mult
@@ -41,7 +44,7 @@ function M.fire_event(held_rings, context, score_state)
         end
     end
 
-    log:debug("[RINGS]: fire event [" .. context.event .. "]. new score_state: ", score_state)
+    log:debug("[RINGS]: fire event [" .. event .. "]. new score_state: ", score_state)
 
     return score_state
 end

@@ -58,7 +58,7 @@ M.rings = {
         name = "Ring of Skull Blood",
         description = "x{xmult} for every symbol landed this spin.",
         cost = 3,
-        values = { xmult = 1.5 },
+        values = { xmult = 1.2 },
     },
     -- footmen = {
     --     id = "footmen",

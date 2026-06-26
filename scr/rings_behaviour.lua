@@ -1,11 +1,12 @@
 local consts      = require("scr.const.game_consts")
 local ring_rarity = consts.ring_rarity
 local log         = require("log.log")
+local event_ids   = require("scr.const.event_ids")
 
 local M           = {}
 
-M.skull_blood = function(ring, context)
-    if context.event == "on_all_symbols_resolved" then
+M.skull_blood     = function(event, ring, context)
+    if event == event_ids.on_all_symbols_resolved then
         log:debug("[RINGS] Trigger skull_blood. xmult = " .. ring.values.xmult)
         return { xmult = ring.values.xmult }
     end

@@ -11,6 +11,7 @@ local log                    = require("log.log")
 local global_urls            = require("scr.const.global_urls")
 local rings_runner           = require("scr.ring_runner")
 local table_utils            = require("scr.utils.table_utils")
+local event_ids              = require("scr.const.event_ids")
 
 local M                      = {}
 M.__index                    = M
@@ -108,7 +109,7 @@ local function apply_symbols(self, symbols_apply_data, index, score_state, on_co
 
     score_state.wounds = score_state.wounds + symbol.value
 
-    rings_runner.fire_event(self.rings, context, score_state)
+    rings_runner.fire_event(event_ids.on_symbol_resolved, self.rings, context, score_state)
 
     -- Apply the current symbol effect
     -- self.damned_model:apply_effect(symbol.effect_id, symbol.value)
@@ -151,16 +152,12 @@ handlers[STATES.SPIN] = function(self)
 end
 
 handlers[STATES.APPLY_RINGS] = function(self, outcome)
-    local context = {
-        event = "on_spin_end"
-    }
-
     local score_state = {
         mult = 1,
         wounds = 0
     }
 
-    rings_runner.fire_event(self.rings, context, score_state)
+    rings_runner.fire_event(event_ids.on_spin_end, self.rings, nil, score_state)
 
     transition(STATES.APPLY_SYMBOLS, self, outcome, score_state)
 end
@@ -176,7 +173,7 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, score_state)
     end
 
     apply_symbols(self, outcome, 1, score_state, function()
-        rings_runner.fire_event(self.rings, { event = "on_all_symbols_resolved" }, score_state)
+        rings_runner.fire_event( event_ids.on_all_symbols_resolved, self.rings, nil, score_state)
 
         local final_damage = score_state.wounds * score_state.mult
 

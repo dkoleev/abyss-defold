@@ -100,7 +100,6 @@ local function apply_symbols(self, symbols_apply_data, index, score_state, on_co
     end
 
     local symbol = symbols_apply_data[index]
-    local effect_config = settings.effects[symbol.effect_id]
 
     local context = {
         event = "on_symbol_resolved",
@@ -190,7 +189,7 @@ handlers[STATES.APPLY_SYMBOLS] = function(self, outcome, score_state)
             timer.delay(0.3, false, function()
                 log:debug("final damage applied to damned: " .. final_damage)
 
-                self.damned_model:apply_effect(consts.effects.p_dmg, final_damage)
+                self.damned_model:get_damage(final_damage)
 
                 timer.delay(settings.battle.durations.apply_damage_to_damned, false, function()
                     msg.post(self.url, MN.player_damage_changed, { value = 0, with_animation = false })

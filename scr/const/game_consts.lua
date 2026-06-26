@@ -5,12 +5,6 @@ return {
         skull = hash("skull"),
     },
 
-    effects = {
-        p_dmg = hash("p_dmg"),
-        m_dmg = hash("m_dmg"),
-        heal = hash("heal")
-    },
-
     ring_rarity = {
         common    = 1,   --men
         uncommon  = 2,   --dwarves

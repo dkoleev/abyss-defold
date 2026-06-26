@@ -27,11 +27,11 @@ function M.new(url, config_id)
     return self
 end
 
-function M:apply_effect(effect, value)
-    if effect == const.effects.p_dmg then
-        self:get_damage(value)
-    end
-end
+-- function M:apply_effect(effect, value)
+--     if effect == const.effects.p_dmg then
+--         self:get_damage(value)
+--     end
+-- end
 
 function M:get_damage(amount)
     if self.is_dead then

@@ -29,12 +29,12 @@ M.levels = {
 --======================= SYMBOLS ==============================================
 
 M.symbols = {
-    DAGGER = { id = "DAGGER", icon = "dagger", type = "attack", value = 5, effect_id = const.effects.p_dmg },
-    SHIELD = { id = "SHIELD", icon = "shield", type = "defend", value = 3, effect_id = const.effects.p_dmg },
-    COIN   = { id = "COIN", icon = "coin", type = "gold", value = 5, effect_id = const.effects.p_dmg },
-    POTION = { id = "POTION", icon = "potion", type = "heal", value = 8, effect_id = const.effects.p_dmg },
-    POISON = { id = "POISON", icon = "poison", type = "debuff", value = 4, effect_id = const.effects.p_dmg },
-    SKULL  = { id = "SKULL", icon = "skull", type = "attack", value = 5, effect_id = const.effects.p_dmg },
+    DAGGER = { id = "DAGGER", icon = "dagger", type = "attack", value = 5 },
+    SHIELD = { id = "SHIELD", icon = "shield", type = "defend", value = 3 },
+    COIN   = { id = "COIN", icon = "coin", type = "gold", value = 5 },
+    POTION = { id = "POTION", icon = "potion", type = "heal", value = 8 },
+    POISON = { id = "POISON", icon = "poison", type = "debuff", value = 4 },
+    SKULL  = { id = "SKULL", icon = "skull", type = "attack", value = 5 }
 }
 
 -- Which symbols are in the player's reel pool (built via meta-progression)
@@ -44,13 +44,6 @@ M.symbols_spawn_pool = {
     M.symbols.SHIELD,
     M.symbols.COIN,
     M.symbols.POTION,
-}
-
-M.effects = {
-    [const.effects.p_dmg] = {
-        type = "active",
-        duration = 0.6
-    }
 }
 
 --======================== RINGS ================================================
@@ -101,19 +94,22 @@ M.rings = {
 
 --======================== DAMNED ====================================================
 M.damned = {
-    [const.damned.demon_eye] = {
+    demon_eye = {
+        id = "demon_eye",
         factory_url = "/factories#damned_demon_eye_factory",
         health = 100,
         p_dmg = 0,
         m_dmg = 10
     },
-    [const.damned.plague_fly] = {
+    plague_fly = {
+        id = "plague_fly",
         factory_url = "/factories#damned_plague_fly_factory",
         health = 80,
         p_dmg = 5,
         m_dmg = 0
     },
-    [const.damned.skull] = {
+    skull = {
+        id = "skull",
         factory_url = "/factories#damned_skull_factory",
         health = 150,
         p_dmg = 10,
@@ -122,9 +118,9 @@ M.damned = {
 }
 
 M.damned_spawn_pool = {
-    const.damned.demon_eye,
-    const.damned.plague_fly,
-    const.damned.skull,
+    M.damned.demon_eye.id,
+    M.damned.demon_eye.id,
+    M.damned.skull.id
 }
 --==============================================================================
 

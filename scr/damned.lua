@@ -12,7 +12,7 @@ function M.new(url, config_id)
 
     local config         = settings.damned[config_id];
     self.url             = url
-    self.url_gui         = msg.url("/gui#battle")
+    self.url_gui         = msg.url("/gui#damned")
     self.max_health      = config.health
     self.health          = config.health
     self.p_dmg           = config.p_dmg

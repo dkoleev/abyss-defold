@@ -1,4 +1,4 @@
-script: "/battle/battle_ui/battle.gui_script"
+script: "/battle/battle_ui/damned.gui_script"
 textures {
   name: "common"
   texture: "/assets/common.atlas"

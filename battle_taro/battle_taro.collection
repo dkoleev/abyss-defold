@@ -1,0 +1,206 @@
+name: "battle_taro"
+instances {
+  id: "battle_camera"
+  prototype: "/battle/battle_camera.go"
+  position {
+    y: -134.0
+  }
+  component_properties {
+    id: "script"
+    properties {
+      id: "zoom"
+      value: "3.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+  }
+}
+scale_along_z: 0
+embedded_instances {
+  id: "root"
+  children: "damned_spawn_point"
+  children: "player"
+  children: "rings_root"
+  data: "components {\n"
+  "  id: \"battle\"\n"
+  "  component: \"/battle_taro/battle_taro.script\"\n"
+  "}\n"
+  ""
+  position {
+    x: -1.0
+    y: -101.0
+  }
+}
+embedded_instances {
+  id: "factories"
+  data: "embedded_components {\n"
+  "  id: \"level_1_collectionproxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/levels/level_1/level_1.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"damned_demon_eye_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle/damned/demon_eye/demon_eye.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"damned_plague_fly_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle/damned/plague_fly/plague_fly.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"damned_skull_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle/damned/skull/skull.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "player"
+  data: "components {\n"
+  "  id: \"player\"\n"
+  "  component: \"/battle/damned/player.script\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "rings_factories"
+  data: "embedded_components {\n"
+  "  id: \"ring_1_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle/rings/rings_opt1/ring_1_opt1.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"ring_skull_blood_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle/rings/rings_opt1/ring_1_opt1.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "rings_root"
+  data: "embedded_components {\n"
+  "  id: \"gloves\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"glove_005_64x64\\\"\\n"
+  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/assets/gloves.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "  position {\n"
+  "    y: -57.0\n"
+  "    z: -0.01\n"
+  "  }\n"
+  "  scale {\n"
+  "    x: 2.0\n"
+  "    y: 2.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    y: -153.0
+    z: 0.2
+  }
+}
+embedded_instances {
+  id: "damage_root"
+  data: "embedded_components {\n"
+  "  id: \"player_wounds_text\"\n"
+  "  type: \"label\"\n"
+  "  data: \"size {\\n"
+  "  x: 64.0\\n"
+  "  y: 32.0\\n"
+  "}\\n"
+  "text: \\\"0\\\"\\n"
+  "font: \\\"/fonts/m6x11plus.font\\\"\\n"
+  "material: \\\"/builtins/fonts/label.material\\\"\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: -31.0\n"
+  "    y: -8.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"player_damage_mult_text\"\n"
+  "  type: \"label\"\n"
+  "  data: \"size {\\n"
+  "  x: 64.0\\n"
+  "  y: 32.0\\n"
+  "}\\n"
+  "text: \\\"0\\\"\\n"
+  "font: \\\"/fonts/m6x11plus.font\\\"\\n"
+  "material: \\\"/builtins/fonts/label.material\\\"\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 3.0\n"
+  "    y: -8.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"player_mult_text\"\n"
+  "  type: \"label\"\n"
+  "  data: \"size {\\n"
+  "  x: 64.0\\n"
+  "  y: 32.0\\n"
+  "}\\n"
+  "text: \\\"x\\\"\\n"
+  "font: \\\"/fonts/m6x11plus.font\\\"\\n"
+  "material: \\\"/builtins/fonts/label.material\\\"\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: -9.0\n"
+  "    y: -8.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"player_equal_text\"\n"
+  "  type: \"label\"\n"
+  "  data: \"size {\\n"
+  "  x: 64.0\\n"
+  "  y: 32.0\\n"
+  "}\\n"
+  "text: \\\"=\\\"\\n"
+  "font: \\\"/fonts/m6x11plus.font\\\"\\n"
+  "material: \\\"/builtins/fonts/label.material\\\"\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 17.0\n"
+  "    y: -8.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"player_final_damage_text\"\n"
+  "  type: \"label\"\n"
+  "  data: \"size {\\n"
+  "  x: 48.0\\n"
+  "  y: 32.0\\n"
+  "}\\n"
+  "text: \\\"0\\\"\\n"
+  "font: \\\"/fonts/m6x11plus.font\\\"\\n"
+  "material: \\\"/builtins/fonts/label.material\\\"\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 43.0\n"
+  "    y: -8.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    x: -21.0
+    y: -113.0
+  }
+}
+embedded_instances {
+  id: "damned_spawn_point"
+  data: ""
+  position {
+    y: 15.0
+  }
+}

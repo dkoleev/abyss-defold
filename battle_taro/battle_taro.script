@@ -1,0 +1,9 @@
+local model = require("scr.battle_taro")
+local MN    = require("scr.const.message_names")
+
+function init(self)
+    msg.post(".", MN.acquire_input_focus)
+
+    self.model = model.new()
+    self.model:start()
+end

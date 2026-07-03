@@ -5,7 +5,7 @@ embedded_instances {
   data: "embedded_components {\n"
   "  id: \"battle_collectionproxy\"\n"
   "  type: \"collectionproxy\"\n"
-  "  data: \"collection: \\\"/battle/battle.collection\\\"\\n"
+  "  data: \"collection: \\\"/battle_taro/battle_taro.collection\\\"\\n"
   "\"\n"
   "}\n"
   ""

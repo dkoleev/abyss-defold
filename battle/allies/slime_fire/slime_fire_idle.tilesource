@@ -1,0 +1,11 @@
+image: "/assets/allies/slime_fire/slime-fire_Idle_full.png"
+tile_width: 64
+tile_height: 64
+collision_groups: "default"
+animations {
+  id: "idle"
+  start_tile: 1
+  end_tile: 6
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}

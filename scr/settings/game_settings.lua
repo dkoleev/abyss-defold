@@ -46,6 +46,39 @@ M.symbols_spawn_pool = {
     M.symbols.POTION,
 }
 
+--======================== TAROT ================================================
+
+M.tarot = {
+    fool             = { index = 0, id = "fool", name = "fool", sprite = "fool" },
+    magician         = { index = 1, id = "", name = "", sprite = "" },
+    high_priestess   = { index = 2, id = "", name = "", sprite = "" },
+    empress          = { index = 3, id = "", name = "", sprite = "" },
+    emperor          = { index = 4, id = "", name = "", sprite = "" },
+    hierophant       = { index = 5, id = "", name = "", sprite = "" },
+    lovers           = { index = 6, id = "", name = "", sprite = "" },
+    chariot          = { index = 7, id = "", name = "", sprite = "" },
+    strength         = { index = 8, id = "", name = "", sprite = "" },
+    hermit           = { index = 9, id = "", name = "", sprite = "" },
+    wheel_of_fortune = { index = 10, id = "", name = "", sprite = "" },
+    justice          = { index = 11, id = "", name = "", sprite = "" },
+    hanged_men       = { index = 12, id = "", name = "", sprite = "" },
+    death            = { index = 13, id = "", name = "", sprite = "" },
+    temperance       = { index = 14, id = "", name = "", sprite = "" },
+    devil            = { index = 15, id = "", name = "", sprite = "" },
+    tower            = { index = 16, id = "", name = "", sprite = "" },
+    star             = { index = 17, id = "", name = "", sprite = "" },
+    moon             = { index = 18, id = "", name = "", sprite = "" },
+    sun              = { index = 19, id = "", name = "", sprite = "" },
+    judgment         = { index = 20, id = "", name = "", sprite = "" },
+    world            = { index = 21, id = "", name = "", sprite = "" }
+}
+
+--======================== ZODIAC ===============================================
+
+M.zodiac = {
+    
+}
+
 --======================== RINGS ================================================
 -- description: show by text_utils.interpolate(description, values) if static (not need dynamic values from state)
 

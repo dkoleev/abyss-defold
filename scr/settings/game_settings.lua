@@ -50,33 +50,44 @@ M.symbols_spawn_pool = {
 
 M.tarot = {
     fool             = { index = 0, id = "fool", name = "fool", sprite = "fool" },
-    magician         = { index = 1, id = "", name = "", sprite = "" },
-    high_priestess   = { index = 2, id = "", name = "", sprite = "" },
-    empress          = { index = 3, id = "", name = "", sprite = "" },
-    emperor          = { index = 4, id = "", name = "", sprite = "" },
-    hierophant       = { index = 5, id = "", name = "", sprite = "" },
-    lovers           = { index = 6, id = "", name = "", sprite = "" },
-    chariot          = { index = 7, id = "", name = "", sprite = "" },
-    strength         = { index = 8, id = "", name = "", sprite = "" },
-    hermit           = { index = 9, id = "", name = "", sprite = "" },
-    wheel_of_fortune = { index = 10, id = "", name = "", sprite = "" },
-    justice          = { index = 11, id = "", name = "", sprite = "" },
-    hanged_men       = { index = 12, id = "", name = "", sprite = "" },
-    death            = { index = 13, id = "", name = "", sprite = "" },
-    temperance       = { index = 14, id = "", name = "", sprite = "" },
-    devil            = { index = 15, id = "", name = "", sprite = "" },
-    tower            = { index = 16, id = "", name = "", sprite = "" },
-    star             = { index = 17, id = "", name = "", sprite = "" },
-    moon             = { index = 18, id = "", name = "", sprite = "" },
-    sun              = { index = 19, id = "", name = "", sprite = "" },
-    judgment         = { index = 20, id = "", name = "", sprite = "" },
-    world            = { index = 21, id = "", name = "", sprite = "" }
+    magician         = { index = 1, id = "magician", name = "magician", sprite = "magician" },
+    high_priestess   = { index = 2, id = "high_priestess", name = "high_priestess", sprite = "high_priestess" },
+    empress          = { index = 3, id = "empress", name = "empress", sprite = "empress" },
+    emperor          = { index = 4, id = "emperor", name = "emperor", sprite = "emperor" },
+    hierophant       = { index = 5, id = "hierophant", name = "hierophant", sprite = "hierophant" },
+    lovers           = { index = 6, id = "lovers", name = "lovers", sprite = "lovers" },
+    chariot          = { index = 7, id = "chariot", name = "chariot", sprite = "chariot" },
+    strength         = { index = 8, id = "strength", name = "strength", sprite = "strength" },
+    hermit           = { index = 9, id = "hermit", name = "hermit", sprite = "hermit" },
+    wheel_of_fortune = { index = 10, id = "wheel_of_fortune", name = "wheel_of_fortune", sprite = "wheel_of_fortune" },
+    justice          = { index = 11, id = "justice", name = "justice", sprite = "justice" },
+    hanged_men       = { index = 12, id = "hanged_men", name = "hanged_men", sprite = "hanged_men" },
+    death            = { index = 13, id = "death", name = "death", sprite = "death" },
+    temperance       = { index = 14, id = "temperance", name = "temperance", sprite = "temperance" },
+    devil            = { index = 15, id = "devil", name = "devil", sprite = "devil" },
+    tower            = { index = 16, id = "tower", name = "tower", sprite = "tower" },
+    star             = { index = 17, id = "star", name = "star", sprite = "star" },
+    moon             = { index = 18, id = "moon", name = "moon", sprite = "moon" },
+    sun              = { index = 19, id = "sun", name = "sun", sprite = "sun" },
+    judgment         = { index = 20, id = "judgment", name = "judgment", sprite = "judgment" },
+    world            = { index = 21, id = "world", name = "world", sprite = "world" }
 }
 
 --======================== ZODIAC ===============================================
 
 M.zodiac = {
-    
+    aries       = { index = 0, id = "aries" },
+    taurus      = { index = 1, id = "taurus" },
+    gemini      = { index = 2, id = "gemini" },
+    cancer      = { index = 3, id = "cancer" },
+    leo         = { index = 4, id = "leo" },
+    virgo       = { index = 5, id = "virgo" },
+    libra       = { index = 6, id = "libra" },
+    scorpio     = { index = 7, id = "scorpio" },
+    sagittarius = { index = 8, id = "sagittarius" },
+    capricorn   = { index = 9, id = "capricorn" },
+    aquarius    = { index = 10, id = "aquarius" },
+    pisces      = { index = 11, id = "pisces" },
 }
 
 --======================== RINGS ================================================

@@ -7,3 +7,7 @@ function init(self)
     self.model = model.new()
     self.model:start()
 end
+
+function on_message(self, message_id, message, sender)
+    self.model:on_message(message_id, message, sender)    
+end

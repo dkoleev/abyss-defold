@@ -1,16 +1,67 @@
-local M                      = {}
-M.__index                    = M
+local settings     = require("scr.settings.game_settings")
+local proxy_loader = require("scr.utils.proxy_loader")
+
+local M            = {}
+M.__index          = M
+
+local handlers     = {}
+
+local STATES       = {
+    PREPARE_BATTLE = "prepare_battle",
+    PLACE_CARDS    = "place_cards",
+    SELECT_CARDS   = "select_cards",
+    APPLY_CARDS    = "apply_cards",
+    APPLY_RINGS    = "apply_rings",
+    DAMNED_ATTACK  = "damned_attack",
+    CHECK_END      = "check_end",
+    PLAYER_WON     = "player_won",
+    PLAYER_LOST    = "player_lost"
+}
+
+local function load_level()
+    proxy_loader.load(settings.levels.level_0.factory_url, {
+        enable = true,
+        acquire_input = true,
+        on_loaded = function(url)
+            print("Loaded")
+            --do somehting on level loaded
+        end
+    })
+end
+
+local function transition(self, new_state, ...)
+    self.state = new_state
+    handlers[new_state](self, ...)
+end
+
+handlers[STATES.PREPARE_BATTLE] = function(self)
+    load_level()
+end
+
+--===== PUBLIC API ==================================
+--===================================================
 
 function M.new()
     local self = setmetatable({
-        url                = msg.url(),
-        state              = nil,
-        damned_url         = nil,
-        damned_model       = nil,
-        player_url         = nil,
-        player_model       = nil,
-        rings              = {}
+        url          = msg.url(),
+        state        = nil,
+        damned_url   = nil,
+        damned_model = nil,
+        player_url   = nil,
+        player_model = nil,
+        rings        = {}
     }, M)
 
     return self
 end
+
+function M:start()
+    transition(self, STATES.PREPARE_BATTLE)
+end
+
+function M:on_message(message_id, message, sender)
+    proxy_loader.on_message(message_id, message, sender)
+end
+
+
+return M

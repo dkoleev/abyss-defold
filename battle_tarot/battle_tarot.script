@@ -1,4 +1,4 @@
-local model = require("scr.battle_taro")
+local model = require("scr.battle_tarot")
 local MN    = require("scr.const.message_names")
 
 function init(self)

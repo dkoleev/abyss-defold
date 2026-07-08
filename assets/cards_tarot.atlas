@@ -1,0 +1,67 @@
+images {
+  image: "/assets/cards/cards_opt_1/card_0_fool.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_10_wheel_of_fortune.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_11_justice.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_12_hanged_man.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_13_death.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_14_temperance.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_15_devil.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_16_tower.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_17_star.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_18_moon.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_19_sun.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_1_magician.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_20_judgement.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_21_world.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_2_high_priestess.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_3_empress.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_4_empreror.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_5_hierophant.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_6_lovers.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_7_chariot.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_8_strength.png"
+}
+images {
+  image: "/assets/cards/cards_opt_1/card_9_hermit.png"
+}
+extrude_borders: 2

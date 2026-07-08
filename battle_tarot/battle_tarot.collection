@@ -1,4 +1,4 @@
-name: "battle_taro"
+name: "battle_tarot"
 instances {
   id: "battle_camera"
   prototype: "/battle/battle_camera.go"
@@ -22,7 +22,7 @@ embedded_instances {
   children: "rings_root"
   data: "components {\n"
   "  id: \"battle\"\n"
-  "  component: \"/battle_taro/battle_taro.script\"\n"
+  "  component: \"/battle_tarot/battle_tarot.script\"\n"
   "}\n"
   ""
   position {

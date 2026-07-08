@@ -8,7 +8,7 @@ local handlers     = {}
 
 local STATES       = {
     PREPARE_BATTLE = "prepare_battle",
-    PLACE_CARDS    = "place_cards",
+    FILL_SPREAD    = "fill_spread",
     SELECT_CARDS   = "select_cards",
     APPLY_CARDS    = "apply_cards",
     APPLY_RINGS    = "apply_rings",

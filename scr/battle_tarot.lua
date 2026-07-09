@@ -3,6 +3,7 @@ local proxy_loader   = require("scr.utils.proxy_loader")
 local table_utils    = require("scr.utils.table_utils")
 local deck_prototype = require("scr.deck")
 local global_urls    = require("scr.const.global_urls")
+local spread_utils   = require("scr.utils.spread_utils")
 
 local M              = {}
 M.__index            = M
@@ -30,6 +31,30 @@ local function load_level()
             --do somehting on level loaded
         end
     })
+end
+
+--Call this whenever cards are added or removed from spread
+local function refresh_spread(self)
+    local tween_duration = 0.25
+    local count = #self.spread
+    local layout = spread_utils.compute(count)
+    local spawn_point = go.get_position(global_urls.spread_center_point())
+
+    for i, card in ipairs(self.spread) do
+        local offset = layout[i]
+
+        local target_pos = vmath.vector3(
+            spawn_point.x + offset.x,
+            spawn_point.y + offset.y,
+            spawn_point.z * 0.01) -- late cards on top
+
+        local target_rot = vmath.quat_rotation_z(math.rad(offset.rotation))
+
+        go.animate(self.card_urls[i], "position", go.PLAYBACK_ONCE_FORWARD,
+            target_pos, go.EASING_OUTQUAD, tween_duration)
+        go.animate(self.card_urls[i], "rotation", go.PLAYBACK_ONCE_FORWARD,
+            target_rot, go.EASING_OUTQUAD, tween_duration)
+    end
 end
 
 local function create_deck_view(self)
@@ -76,8 +101,12 @@ handlers[STATES.FILL_SPREAD] = function(self)
         self.spread[#self.spread + 1] = card
         local pos = go.get_position(global_urls.spread_center_point())
         pprint(card)
-        local props = {initial_animation = hash(card.sprite)}
-        factory.create(settings.battle.tarot_card_factory_url, pos, nil, props)
+        local props = { initial_animation = hash(card.sprite) }
+        local card_url = factory.create(settings.battle.tarot_card_factory_url, pos, nil, props)
+        --TODO: remove and hole card go in spread instead
+        self.card_urls[#self.card_urls + 1] = card_url
+
+        refresh_spread(self)
     end
 
     -- pprint(self.deck)
@@ -110,7 +139,8 @@ function M.new()
         deck           = deck_prototype.new(), -- shuffled tarot cards
         deck_url       = nil,
         spread         = {},                   -- current cards for choice
-        selected_cards = {}
+        selected_cards = {},
+        card_urls      = {}
     }, M)
 
     return self

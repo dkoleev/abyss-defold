@@ -4,13 +4,14 @@ local ring_rarity = const.ring_rarity
 local M = {}
 
 M.battle = {
-    damned_factory_url = "/factories#damned_factory",
-    durations = {
+    damned_factory_url  = "/factories#damned_factory",
+    durations           = {
         add_symbol_value_to_result = 0.2,
         add_ring_value_to_result = 0.2,
         apply_damage_to_damned = 1
     },
-    spread_default_size = 5
+    spread_default_size = 5,
+    play_hand_size      = 3
 }
 
 M.player = {

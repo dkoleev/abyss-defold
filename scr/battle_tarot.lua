@@ -1,13 +1,14 @@
-local settings     = require("scr.settings.game_settings")
-local proxy_loader = require("scr.utils.proxy_loader")
-local table_utils  = require("scr.utils.table_utils")
+local settings       = require("scr.settings.game_settings")
+local proxy_loader   = require("scr.utils.proxy_loader")
+local table_utils    = require("scr.utils.table_utils")
+local deck_prototype = require("scr.deck")
 
-local M            = {}
-M.__index          = M
+local M              = {}
+M.__index            = M
 
-local handlers     = {}
+local handlers       = {}
 
-local STATES       = {
+local STATES         = {
     PREPARE_BATTLE = "prepare_battle",
     FILL_SPREAD    = "fill_spread",
     SELECT_CARDS   = "select_cards",
@@ -30,18 +31,20 @@ local function load_level()
     })
 end
 
-local function draw_card(self)
-    if #self.deck == 0 then
-        -- Reshuffle discard pile back into the deck
-        self.deck = self.discard
-        self.discard = {}
-        table_utils.shuffle(self.deck)
+local function discard_card(self, card)
+    table_utils.remove_value_from_array(self.spread, card)
+    self.deck:discard_card(card)
+end
+
+local function play_card(self, card)
+    table_utils.remove_value_from_array(self.spread, card)
+    self.selected_cards[#self.selected_cards+1] = card
+end
+
+local function apply_cards(self)
+    for _, card in self.select_cards do
+        --TODO: apply card
     end
-
-    local card = table.remove(self.deck)
-    self.spread[#self.spread + 1] = card
-
-    return card
 end
 
 local function transition(self, new_state, ...)
@@ -52,22 +55,30 @@ end
 handlers[STATES.PREPARE_BATTLE] = function(self)
     load_level()
 
-    self.discard = {}
-    self.deck = table_utils.build(settings.tarot)
-    table_utils.shuffle(self.deck)
+    self.deck:build(settings.tarot)
 
     transition(self, STATES.FILL_SPREAD)
 end
 
-handlers[STATES.FILL_SPREAD] = function (self)
+handlers[STATES.FILL_SPREAD] = function(self)
     local spread_size = settings.battle.spread_default_size
     for i = 1, spread_size do
-        draw_card(self)
+        self.spread[#self.spread + 1] = self.deck:draw_card()
     end
 
-    pprint(self.deck)
-    pprint(self.spread)
-    pprint(self.discard)
+    -- pprint(self.deck)
+    -- pprint(self.spread)
+
+    -- discard_card(self, self.spread[1])
+
+    -- pprint(self.deck)
+    -- pprint(self.spread)
+
+    transition(self, STATES.SELECT_CARDS)
+end
+
+handlers[STATES.SELECT_CARDS] = function(self)
+
 end
 
 --===== PUBLIC API ==================================
@@ -75,16 +86,16 @@ end
 
 function M.new()
     local self = setmetatable({
-        url          = msg.url(),
-        state        = nil,
-        damned_url   = nil,
-        damned_model = nil,
-        player_url   = nil,
-        player_model = nil,
-        rings        = {},
-        deck         = {}, -- shuffled tarot cards
-        discard      = {}, -- drawn cards go here
-        spread       = {}  -- current cards for choice
+        url            = msg.url(),
+        state          = nil,
+        damned_url     = nil,
+        damned_model   = nil,
+        player_url     = nil,
+        player_model   = nil,
+        rings          = {},
+        deck           = deck_prototype.new(), -- shuffled tarot cards
+        spread         = {},                   -- current cards for choice
+        selected_cards = {}
     }, M)
 
     return self

@@ -2,6 +2,7 @@ local settings       = require("scr.settings.game_settings")
 local proxy_loader   = require("scr.utils.proxy_loader")
 local table_utils    = require("scr.utils.table_utils")
 local deck_prototype = require("scr.deck")
+local global_urls    = require("scr.const.global_urls")
 
 local M              = {}
 M.__index            = M
@@ -31,6 +32,13 @@ local function load_level()
     })
 end
 
+local function create_deck_view(self)
+    local pos = go.get_world_position(global_urls.deck_spawn_point())
+    local deck_config = settings.decks.deck_0
+
+    self.deck_url = factory.create(deck_config.factory_url, pos)
+end
+
 local function discard_card(self, card)
     table_utils.remove_value_from_array(self.spread, card)
     self.deck:discard_card(card)
@@ -38,7 +46,7 @@ end
 
 local function play_card(self, card)
     table_utils.remove_value_from_array(self.spread, card)
-    self.selected_cards[#self.selected_cards+1] = card
+    self.selected_cards[#self.selected_cards + 1] = card
 end
 
 local function apply_cards(self)
@@ -53,9 +61,10 @@ local function transition(self, new_state, ...)
 end
 
 handlers[STATES.PREPARE_BATTLE] = function(self)
-    load_level()
-
     self.deck:build(settings.tarot)
+
+    load_level()
+    create_deck_view(self)
 
     transition(self, STATES.FILL_SPREAD)
 end
@@ -94,6 +103,7 @@ function M.new()
         player_model   = nil,
         rings          = {},
         deck           = deck_prototype.new(), -- shuffled tarot cards
+        deck_url       = nil,
         spread         = {},                   -- current cards for choice
         selected_cards = {}
     }, M)

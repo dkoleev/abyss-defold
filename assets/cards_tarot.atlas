@@ -64,4 +64,7 @@ images {
 images {
   image: "/assets/cards/cards_opt_1/card_9_hermit.png"
 }
+images {
+  image: "/assets/cards/cards_backsides/Tarot Backsides_tile_0.png"
+}
 extrude_borders: 2

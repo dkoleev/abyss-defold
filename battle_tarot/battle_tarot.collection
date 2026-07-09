@@ -14,10 +14,6 @@ instances {
     }
   }
 }
-collection_instances {
-  id: "level_1"
-  collection: "/levels/level_1/level_1.collection"
-}
 scale_along_z: 0
 embedded_instances {
   id: "root"
@@ -31,10 +27,6 @@ embedded_instances {
   "  component: \"/battle_tarot/battle_tarot.script\"\n"
   "}\n"
   ""
-  position {
-    x: -1.0
-    y: -101.0
-  }
 }
 embedded_instances {
   id: "factories"
@@ -55,7 +47,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"card_tarot_factory\"\n"
   "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/battle_tarot/cards/tarot/card_tarot_0_fool.go\\\"\\n"
+  "  data: \"prototype: \\\"/battle_tarot/card_tarot.go\\\"\\n"
   "\"\n"
   "}\n"
   ""
@@ -91,7 +83,7 @@ embedded_instances {
   "}\n"
   ""
   position {
-    y: -192.0
+    y: -305.0
     z: 0.2
   }
 }
@@ -193,6 +185,9 @@ embedded_instances {
 embedded_instances {
   id: "spread_center_point"
   data: ""
+  position {
+    y: -260.0
+  }
 }
 embedded_instances {
   id: "damned"
@@ -236,7 +231,7 @@ embedded_instances {
   id: "deck_spawn_point"
   data: ""
   position {
-    x: 173.0
-    y: -136.0
+    x: 230.0
+    y: -300.0
   }
 }

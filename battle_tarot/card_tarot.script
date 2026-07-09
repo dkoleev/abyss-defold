@@ -1,12 +1,16 @@
 local model = require("scr.card_tarot")
 local MN    = require("scr.const.message_names")
 
+go.property("initial_animation", hash(""))
+
 function init(self)
     msg.post(".", MN.acquire_input_focus)
 
-    self.model = model.new()
+    msg.post("#sprite", "play_animation", { id = self.initial_animation })
+
+    -- self.model = model.new()
 end
 
 function on_input(self, action_id, action)
-    self.model:on_input(action_id, action)
+    -- self.model:on_input(action_id, action)
 end

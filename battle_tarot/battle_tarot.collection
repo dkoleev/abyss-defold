@@ -38,7 +38,6 @@ embedded_instances {
 }
 embedded_instances {
   id: "factories"
-  children: "cards_tarot"
   children: "damned"
   children: "rings"
   data: "embedded_components {\n"
@@ -51,6 +50,12 @@ embedded_instances {
   "  id: \"deck_0_factory\"\n"
   "  type: \"factory\"\n"
   "  data: \"prototype: \\\"/battle_tarot/deck.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"card_tarot_factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/battle_tarot/cards/tarot/card_tarot_0_fool.go\\\"\\n"
   "\"\n"
   "}\n"
   ""
@@ -188,16 +193,6 @@ embedded_instances {
 embedded_instances {
   id: "spread_center_point"
   data: ""
-}
-embedded_instances {
-  id: "cards_tarot"
-  data: "embedded_components {\n"
-  "  id: \"card_tarot_0_fool_factory\"\n"
-  "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/battle_tarot/cards/tarot/card_tarot_0_fool.go\\\"\\n"
-  "\"\n"
-  "}\n"
-  ""
 }
 embedded_instances {
   id: "damned"

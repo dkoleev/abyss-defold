@@ -72,7 +72,12 @@ end
 handlers[STATES.FILL_SPREAD] = function(self)
     local spread_size = settings.battle.spread_default_size
     for i = 1, spread_size do
-        self.spread[#self.spread + 1] = self.deck:draw_card()
+        local card = self.deck:draw_card()
+        self.spread[#self.spread + 1] = card
+        local pos = go.get_position(global_urls.spread_center_point())
+        pprint(card)
+        local props = {initial_animation = hash(card.sprite)}
+        factory.create(settings.battle.tarot_card_factory_url, pos, nil, props)
     end
 
     -- pprint(self.deck)

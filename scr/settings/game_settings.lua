@@ -11,7 +11,8 @@ M.battle = {
         apply_damage_to_damned = 1
     },
     spread_default_size = 5,
-    play_hand_size      = 3
+    play_hand_size      = 3,
+    tarot_card_factory_url = "/factories#card_tarot_factory"
 }
 
 M.player = {

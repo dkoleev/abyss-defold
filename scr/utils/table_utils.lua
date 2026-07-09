@@ -1,5 +1,19 @@
 local M = {}
 
+-- build flat array from named keys (named key -> indexed array)
+-- registry must contains field index for sort by it
+function M.build(registry)
+    local result = {}
+    for _, item in pairs(registry) do
+        result[#result+1] = item
+    end
+
+    -- Sort by index so the initial order is deterministic (0..21)
+    table.sort(result, function(a, b) return a.index < b.index  end)
+
+    return result
+end
+
 --- Finds the index of the first occurrence of a value in an array-style table.
 ---@param t table Array-style table to search.
 ---@param value any Value to search for (compared with `==`).

@@ -1,5 +1,6 @@
 local settings     = require("scr.settings.game_settings")
 local proxy_loader = require("scr.utils.proxy_loader")
+local table_utils  = require("scr.utils.table_utils")
 
 local M            = {}
 M.__index          = M
@@ -29,6 +30,20 @@ local function load_level()
     })
 end
 
+local function draw_card(self)
+    if #self.deck == 0 then
+        -- Reshuffle discard pile back into the deck
+        self.deck = self.discard
+        self.discard = {}
+        table_utils.shuffle(self.deck)
+    end
+
+    local card = table.remove(self.deck)
+    self.spread[#self.spread + 1] = card
+
+    return card
+end
+
 local function transition(self, new_state, ...)
     self.state = new_state
     handlers[new_state](self, ...)
@@ -36,6 +51,23 @@ end
 
 handlers[STATES.PREPARE_BATTLE] = function(self)
     load_level()
+
+    self.discard = {}
+    self.deck = table_utils.build(settings.tarot)
+    table_utils.shuffle(self.deck)
+
+    transition(self, STATES.FILL_SPREAD)
+end
+
+handlers[STATES.FILL_SPREAD] = function (self)
+    local spread_size = settings.battle.spread_default_size
+    for i = 1, spread_size do
+        draw_card(self)
+    end
+
+    pprint(self.deck)
+    pprint(self.spread)
+    pprint(self.discard)
 end
 
 --===== PUBLIC API ==================================
@@ -49,7 +81,10 @@ function M.new()
         damned_model = nil,
         player_url   = nil,
         player_model = nil,
-        rings        = {}
+        rings        = {},
+        deck         = {}, -- shuffled tarot cards
+        discard      = {}, -- drawn cards go here
+        spread       = {}  -- current cards for choice
     }, M)
 
     return self
@@ -62,6 +97,5 @@ end
 function M:on_message(message_id, message, sender)
     proxy_loader.on_message(message_id, message, sender)
 end
-
 
 return M

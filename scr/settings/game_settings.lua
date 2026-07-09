@@ -9,7 +9,8 @@ M.battle = {
         add_symbol_value_to_result = 0.2,
         add_ring_value_to_result = 0.2,
         apply_damage_to_damned = 1
-    }
+    },
+    spread_default_size = 5
 }
 
 M.player = {
@@ -49,7 +50,7 @@ M.symbols_spawn_pool = {
 --======================== TAROT ================================================
 
 M.tarot = {
-    fool             = { index = 0, id = "fool", name = "fool", sprite = "fool" },
+    fool             = { index = 0, id = "fool", name = "fool", sprite = "fool", factory_url = "/cards_tarot#card_tarot_0_fool_factory" },
     magician         = { index = 1, id = "magician", name = "magician", sprite = "magician" },
     high_priestess   = { index = 2, id = "high_priestess", name = "high_priestess", sprite = "high_priestess" },
     empress          = { index = 3, id = "empress", name = "empress", sprite = "empress" },

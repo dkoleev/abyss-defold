@@ -6,7 +6,7 @@ M.slots = {
 }
 
 M.cards = {
-    flip_duration = 0.4
+    flip_duration = 0.3
 }
 
 return M

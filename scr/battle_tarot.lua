@@ -100,8 +100,8 @@ handlers[STATES.FILL_SPREAD] = function(self)
         local card = self.deck:draw_card()
         self.spread[#self.spread + 1] = card
         local pos = go.get_position(global_urls.spread_center_point())
-        pprint(card)
-        local props = { initial_animation = hash(card.sprite) }
+        -- local props = { initial_animation = hash(card.sprite) }
+        local props = { card_id = hash(card.id) }
         local card_url = factory.create(settings.battle.tarot_card_factory_url, pos, nil, props)
         --TODO: remove and hole card go in spread instead
         self.card_urls[#self.card_urls + 1] = card_url

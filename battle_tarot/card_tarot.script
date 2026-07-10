@@ -5,11 +5,25 @@ local visual_settings = require("scr.settings.visual_settings")
 local idle_anim_logic = require("scr.card.card_idle_anim")
 local anim_logic      = require("scr.card.card_anim")
 local settings        = require("scr.settings.game_settings")
+local camera          = require("orthographic.camera")
 
 go.property("card_id", hash(""))
 
 local FRONT_URL = "#sprite"
 local BACK_URL  = "#back_sprite"
+
+local CARD_W    = 32 -- half-width in pixels
+local CARD_H    = 48 -- half-height in pixels
+
+local function is_cursor_over(self, action)
+    local pos = go.get_position()
+    local world = camera.screen_to_world(self.cam_id, vmath.vector3(action.screen_x, action.screen_y, 0))
+
+    local dx = world.x - pos.x
+    local dy = world.y - pos.y
+
+    return math.abs(dx) < CARD_W and math.abs(dy) < CARD_H
+end
 
 local function flip_immediate(self)
     if self.is_facing then
@@ -57,6 +71,10 @@ function init(self)
     self.base_rot = 0 -- radians; change for tilted/hand cards
     self.go_id = go.get_id()
     self.base_position_y = go.get_position().y
+    self.is_hovering = false
+    self.cam_id = hash("/battle_camera")
+    self.cam_id = hash("/battle_camera")
+    self.screen_h = tonumber(sys.get_config_int("display.height"))
 
     msg.post(FRONT_URL, "play_animation", { id = hash(self.card_config.sprite) })
 
@@ -66,9 +84,9 @@ function init(self)
     flip_immediate(self)
     flip(self)
 
-    timer.delay(1, false, function ()
+    timer.delay(1, false, function()
         -- anim_logic.juice_up(self)
-        anim_logic.on_hover_enter(self)
+        -- anim_logic.on_hover_enter(self)
     end)
 end
 
@@ -82,7 +100,16 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
-    -- self.model:on_input(action_id, action)
+    if action_id == nil then -- mouse move
+        local over = is_cursor_over(self, action)
+        if over and not self.is_hovering then
+            self.is_hovering = true
+            anim_logic.on_hover_enter(self)
+        elseif not over and self.is_hovering then
+            self.is_hovering = false
+            anim_logic.on_hover_exit(self)
+        end
+    end
 end
 
 function on_message(self, message_id, message, sender)

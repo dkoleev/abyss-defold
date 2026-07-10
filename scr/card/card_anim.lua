@@ -68,14 +68,11 @@ function M.on_hover_enter(self)
 
     -- lift up
     local start_y = go.get(self.go_id, "position.y")
-    print(go.get_id())
-    print(start_y)
     self.hover_tween = tweener.tween(
         go.EASING_OUTQUAD,
         start_y, start_y + HOVER_LIFT, HOVER_DURATION,
         function(v)
             go.set(self.go_id, "position.y", v)
-            print(v)
         end
     )
 end

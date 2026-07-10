@@ -14,21 +14,22 @@
 ---   card_anim.juice_up(self, 0.11, 0.16)   -- scale_amount, rot_amount
 ---   card_anim.flip(self)                    -- toggles front/back
 
-local tweener           = require("tweener.tweener")
+local tweener              = require("tweener.tweener")
 
-local M                 = {}
+local M                    = {}
 
 -- ─────────────────────────────────────────────
 -- Constants
 -- ─────────────────────────────────────────────
 
-local JUICE_SCALE_DECAY = 8.0  -- how fast the scale bump springs back
-local JUICE_ROT_DECAY   = 6.0  -- how fast the rotation springs back
-local FLIP_SPEED        = 6.0  -- X-scale pinch speed (units/sec)
+local JUICE_SCALE_DECAY    = 8.0  -- how fast the scale bump springs back
+local JUICE_ROT_DECAY      = 6.0  -- how fast the rotation springs back
+local FLIP_SPEED           = 6.0  -- X-scale pinch speed (units/sec)
 
-local HOVER_LIFT        = 30  -- pixels up (negative Y in Defold)
-local HOVER_SCALE       = 1.08 -- slight grow while held
-local HOVER_DURATION    = 0.12 -- seconds
+local HOVER_LIFT           = 10   -- pixels up (negative Y in Defold)
+local HOVER_DURATION       = 0.12 -- seconds
+local HOVER_SCALE_TO       = vmath.vector3(1.08, 1.08, 1)
+local HOVER_SCALE_DURATION = 0.12
 
 
 -- ─────────────────────────────────────────────
@@ -58,36 +59,48 @@ end
 -- ─────────────────────────────────────────────
 
 function M.on_hover_enter(self)
-    -- one-shot pop
-    M.juice_up(self, 0.05, 0.03)
+    go.cancel_animations(self.go_id, "position.y")
+    go.cancel_animations(self.go_id, "scale")
 
-    -- cancel any ongoing exit tween
-    if self.hover_tween then
-        tweener.cancel(self.hover_tween)
-    end
+    local start_y = go.get_position(self.go_id).y
 
-    -- lift up
-    local start_y = go.get(self.go_id, "position.y")
-    self.hover_tween = tweener.tween(
+    go.animate(
+        self.go_id, "position.y",
+        go.PLAYBACK_ONCE_FORWARD,
+        start_y + HOVER_LIFT,
         go.EASING_OUTQUAD,
-        start_y, start_y + HOVER_LIFT, HOVER_DURATION,
-        function(v)
-            go.set(self.go_id, "position.y", v)
-        end
+        HOVER_DURATION
+    )
+
+    go.animate(
+        self.go_id, "scale",
+        go.PLAYBACK_ONCE_FORWARD,
+        HOVER_SCALE_TO,
+        go.EASING_OUTBACK, -- overshoot feels more "juicy"
+        HOVER_SCALE_DURATION
     )
 end
 
 function M.on_hover_exit(self)
-    if self.hover_tween then
-        tweener.cancel(self.hover_tween)
-    end
+    go.cancel_animations(self.go_id, "position.y")
+    go.cancel_animations(self.go_id, "scale")
 
-    local start_y = go.get(self.go_id, "position.y")
-    self.hover_tween = tweener.tween(
-        go.EASING_INQUAD,
-        start_y, self.base_position_y, -- back to original
-        HOVER_DURATION,
-        function(v) go.set(self.go_id, "position.y", v) end
+    local start_y = go.get_position(self.go_id).y
+
+    go.animate(
+        self.go_id, "position.y",
+        go.PLAYBACK_ONCE_FORWARD,
+        start_y - HOVER_LIFT,
+        go.EASING_OUTQUAD,
+        HOVER_DURATION
+    )
+
+    go.animate(
+        self.go_id, "scale",
+        go.PLAYBACK_ONCE_FORWARD,
+        vmath.vector3(1, 1, 1),
+        go.EASING_OUTQUAD,
+        HOVER_SCALE_DURATION
     )
 end
 

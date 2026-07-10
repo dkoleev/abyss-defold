@@ -70,7 +70,6 @@ function init(self)
     self.is_facing = true
     self.base_rot = 0 -- radians; change for tilted/hand cards
     self.go_id = go.get_id()
-    self.base_position_y = go.get_position().y
     self.is_hovering = false
     self.cam_id = hash("/battle_camera")
     self.cam_id = hash("/battle_camera")
@@ -103,10 +102,14 @@ function on_input(self, action_id, action)
     if action_id == nil then -- mouse move
         local over = is_cursor_over(self, action)
         if over and not self.is_hovering then
-            self.is_hovering = true
-            anim_logic.on_hover_enter(self)
+            if not self.is_hovering then
+                self.is_hovering = true
+                anim_logic.on_hover_enter(self)
+            end
         elseif not over and self.is_hovering then
-            self.is_hovering = false
+            if self.is_hovering then
+                self.is_hovering = false
+            end
             anim_logic.on_hover_exit(self)
         end
     end

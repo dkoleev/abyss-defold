@@ -43,8 +43,8 @@ local PHASE_ID_DIVISOR = 1.35122
 
 -- Max tilt expressed as euler.z degrees and scale skew
 -- Tune these to taste for your pixel art style
-local MAX_ROT_DEG      = 0.1    --1.8    -- degrees of Z rotation at full tilt
-local MAX_SCALE_SKEW   = 0.015  -- 0.012  -- scale.x squish at full tilt (perspective fake)
+local MAX_ROT_DEG      = 2.8    --1.8    -- degrees of Z rotation at full tilt
+local MAX_SCALE_SKEW   = 0.03  -- 0.012  -- scale.x squish at full tilt (perspective fake)
 
 -- ─────────────────────────────────────────────────────────────
 -- Init
@@ -80,7 +80,7 @@ end
 ---@param self  table   script self
 ---@param dt    number  delta time in seconds
 function M.update(self, dt)
-    -- if not self.idle or not self.idle.active then return end
+    if not self.idle or not self.idle.active then return end
 
     self.idle.time     = self.idle.time + dt
 

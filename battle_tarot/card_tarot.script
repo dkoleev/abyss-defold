@@ -10,14 +10,6 @@ go.property("card_id", hash(""))
 local FRONT_URL = "#sprite"
 local BACK_URL  = "#back_sprite"
 
-local function get_euler_z(url)
-    local q = go.get(url or go.get_id(), "rotation")
-    -- quaternion Z-only rotation: angle = 2 * asin(q.z)
-    -- but atan2 is more numerically stable:
-    local angle_rad = 2 * math.atan2(q.z, q.w)
-    return math.deg(angle_rad)
-end
-
 local function flip_immediate(self)
     if self.is_facing then
         go.set(BACK_URL, "tint.w", 1)
@@ -65,17 +57,24 @@ function init(self)
     idle_anim_logic.init(self, self.card_config.index)
 
     self.is_facing = true
+    self.current_rotation = 0
+
     flip_immediate(self)
     flip(self)
-    -- self.model = model.new()
 end
 
 function update(self, dt)
     idle_anim_logic.update(self, dt)
-    local rot_deg = get_euler_z()
-    idle_anim_logic.apply(self, rot_deg, 1, 1)
+    idle_anim_logic.apply(self, self.current_rotation, 1, 1)
 end
 
 function on_input(self, action_id, action)
     -- self.model:on_input(action_id, action)
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("change_rotation") then
+        print(message.rotation)
+        self.current_rotation = message.rotation
+    end
 end

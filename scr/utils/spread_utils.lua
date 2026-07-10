@@ -15,8 +15,8 @@ local M = {}
 M.default_config = {
     max_spread   = 600,
     card_width   = 64,
-    arc_depth    = 20,
-    max_rotation = 20,
+    arc_depth    = 10,
+    max_rotation = 10,
     card_overlap = 0.3, -- cards start overlapping when spread gets tight
 }
 

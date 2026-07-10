@@ -5,4 +5,8 @@ M.slots = {
     symbol_size = 32
 }
 
+M.cards = {
+    flip_duration = 0.4
+}
+
 return M

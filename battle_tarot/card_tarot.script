@@ -1,13 +1,72 @@
-local model = require("scr.card_tarot")
-local MN    = require("scr.const.message_names")
+local model           = require("scr.card_tarot")
+local MN              = require("scr.const.message_names")
+local tweener         = require("tweener.tweener")
+local visual_settings = require("scr.settings.visual_settings")
 
 go.property("initial_animation", hash(""))
+
+local FRONT_URL = "#sprite"
+local BACK_URL  = "#back_sprite"
+
+local function flip_immediate(self)
+    if self.is_facing then
+        go.set(BACK_URL, "tint.w", 1)
+        go.set(FRONT_URL, "tint.w", 0)
+    else
+        go.set(BACK_URL, "tint.w", 0)
+        go.set(FRONT_URL, "tint.w", 1)
+    end
+
+    self.is_facing = not self.is_facing
+end
+
+-- flip via tweener instead of manual update
+local function flip(self)
+    -- if self.anim.flip_state ~= "idle" then return end
+    -- self.anim.flip_state = "flipping"
+
+    local duration_half = visual_settings.cards.flip_duration / 2
+
+    tweener.tween(go.EASING_INQUAD, 1, 0, duration_half, function(value, is_end)
+        go.set(go.get_id(), "scale.x", value)
+
+        if is_end then
+            flip_immediate(self)
+            tweener.tween(go.EASING_OUTQUAD, 0, 1, duration_half, function(value, is_end)
+                go.set(go.get_id(), "scale.x", value)
+            end)
+        end
+    end)
+
+    -- -- fold
+    -- tweener.tween(
+    --     go.EASING_INQUAD, FLIP_DURATION / 2,
+    --     1, 0, -- from → to
+    --     function(v)
+    --         go.set(go.get_id(), "scale.x", v)
+    --     end,
+    --     function()
+    --         -- mid-flip callback
+
+    --         -- unfold
+    --         tweener.tween(
+    --             tween.easing.outQuad, FLIP_DURATION / 2,
+    --             0, 1,
+    --             function(v) go.set(go.get_id(), "scale.x", v) end,
+    --             function() self.anim.flip_state = "idle" end
+    --         )
+    --     end
+    -- )
+end
 
 function init(self)
     msg.post(".", MN.acquire_input_focus)
 
-    msg.post("#sprite", "play_animation", { id = self.initial_animation })
+    msg.post(FRONT_URL, "play_animation", { id = self.initial_animation })
 
+    self.is_facing = true
+    flip_immediate(self)
+    flip(self)
     -- self.model = model.new()
 end
 

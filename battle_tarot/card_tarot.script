@@ -3,6 +3,7 @@ local MN              = require("scr.const.message_names")
 local tweener         = require("tweener.tweener")
 local visual_settings = require("scr.settings.visual_settings")
 local idle_anim_logic = require("scr.card.card_idle_anim")
+local anim_logic      = require("scr.card.card_anim")
 local settings        = require("scr.settings.game_settings")
 
 go.property("card_id", hash(""))
@@ -52,20 +53,32 @@ function init(self)
         end
     end
 
+    self.is_facing = true
+    self.base_rot = 0 -- radians; change for tilted/hand cards
+    self.go_id = go.get_id()
+    self.base_position_y = go.get_position().y
+
     msg.post(FRONT_URL, "play_animation", { id = hash(self.card_config.sprite) })
 
     idle_anim_logic.init(self, self.card_config.index)
-
-    self.is_facing = true
-    self.current_rotation = 0
+    anim_logic.init(self)
 
     flip_immediate(self)
     flip(self)
+
+    timer.delay(1, false, function ()
+        -- anim_logic.juice_up(self)
+        anim_logic.on_hover_enter(self)
+    end)
 end
 
 function update(self, dt)
+    anim_logic.update(self, dt)
     idle_anim_logic.update(self, dt)
-    idle_anim_logic.apply(self, self.current_rotation, 1, 1)
+
+    local sx, sy, rz = anim_logic.get_transform(self, 1, 1, self.base_rot)
+
+    idle_anim_logic.apply(self, rz, sx, sy)
 end
 
 function on_input(self, action_id, action)
@@ -74,7 +87,11 @@ end
 
 function on_message(self, message_id, message, sender)
     if message_id == hash("change_rotation") then
-        print(message.rotation)
-        self.current_rotation = message.rotation
+        self.base_rot = message.rotation
+    end
+
+    if message_id == hash("juice_up") then
+        -- optional custom scale/rot from message data
+        anim_logic.juice_up(self, message.scale, message.rot)
     end
 end

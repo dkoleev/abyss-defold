@@ -11,7 +11,8 @@ M.card = {
     hover_scale = vmath.vector3(1.08),
     hover_lift = 10, -- pixels up
     hover_lift_duration = 0.12,
-    hover_scale_duration = 0.12
+    hover_scale_duration = 0.12,
+    hover_z_position = 0.1
 }
 
 return M

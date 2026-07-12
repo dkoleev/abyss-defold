@@ -82,6 +82,7 @@ function init(self)
     self.cam_id = hash("/battle_camera")
     self.cam_id = hash("/battle_camera")
     self.screen_h = tonumber(sys.get_config_int("display.height"))
+    self.base_z_pos = 0
 
     go.set_scale(visual_settings.card.base_scale)
 
@@ -95,6 +96,8 @@ function init(self)
 end
 
 function update(self, dt)
+
+    print(go.get_position())
     anim_logic.update(self, dt)
     idle_anim_logic.update(self, dt)
 
@@ -110,13 +113,14 @@ function on_input(self, action_id, action)
         if over and not self.is_hovering then
             if not self.is_hovering then
                 self.is_hovering = true
+                self.base_z_pos = go.get_position().z
                 anim_logic.on_hover_enter(self)
             end
         elseif not over and self.is_hovering then
             if self.is_hovering then
                 self.is_hovering = false
             end
-            anim_logic.on_hover_exit(self)
+            anim_logic.on_hover_exit(self, self.base_z_pos)
         end
     end
 end

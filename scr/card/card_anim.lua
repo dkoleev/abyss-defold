@@ -57,12 +57,13 @@ function M.on_hover_enter(self)
     go.cancel_animations(self.go_id, "position.y")
     go.cancel_animations(self.go_id, "scale")
 
-    local start_y = go.get_position(self.go_id).y
-
+    local cur_pos = go.get_position(self.go_id)
+    go.set_position(vmath.vector3(cur_pos.x, cur_pos.y, visual_settings.card.hover_z_position))
+    
     go.animate(
         self.go_id, "position.y",
         go.PLAYBACK_ONCE_FORWARD,
-        start_y + visual_settings.card.hover_lift,
+        cur_pos.y + visual_settings.card.hover_lift,
         go.EASING_OUTQUAD,
         visual_settings.card.hover_lift_duration
     )
@@ -76,16 +77,18 @@ function M.on_hover_enter(self)
     )
 end
 
-function M.on_hover_exit(self)
+function M.on_hover_exit(self, base_z_pos)
     go.cancel_animations(self.go_id, "position.y")
     go.cancel_animations(self.go_id, "scale")
 
-    local start_y = go.get_position(self.go_id).y
+    local start_pos = go.get_position(self.go_id)
+
+    go.set_position(vmath.vector3(start_pos.x, start_pos.y, base_z_pos))
 
     go.animate(
         self.go_id, "position.y",
         go.PLAYBACK_ONCE_FORWARD,
-        start_y - visual_settings.card.hover_lift,
+        start_pos.y - visual_settings.card.hover_lift,
         go.EASING_OUTQUAD,
         visual_settings.card.hover_lift_duration
     )

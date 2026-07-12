@@ -46,7 +46,7 @@ local function refresh_spread(self)
         local target_pos = vmath.vector3(
             spawn_point.x + offset.x,
             spawn_point.y + offset.y,
-            spawn_point.z * 0.01) -- late cards on top
+            spawn_point.z - i * 0.01) -- late cards on top
 
         local target_rot = vmath.quat_rotation_z(math.rad(offset.rotation))
 
@@ -109,14 +109,6 @@ handlers[STATES.FILL_SPREAD] = function(self)
 
         refresh_spread(self)
     end
-
-    -- pprint(self.deck)
-    -- pprint(self.spread)
-
-    -- discard_card(self, self.spread[1])
-
-    -- pprint(self.deck)
-    -- pprint(self.spread)
 
     transition(self, STATES.SELECT_CARDS)
 end

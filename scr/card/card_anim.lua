@@ -15,6 +15,7 @@
 ---   card_anim.flip(self)                    -- toggles front/back
 
 local tweener              = require("tweener.tweener")
+local visual_settings      = require("scr.settings.visual_settings")
 
 local M                    = {}
 
@@ -25,12 +26,6 @@ local M                    = {}
 local JUICE_SCALE_DECAY    = 8.0  -- how fast the scale bump springs back
 local JUICE_ROT_DECAY      = 6.0  -- how fast the rotation springs back
 local FLIP_SPEED           = 6.0  -- X-scale pinch speed (units/sec)
-
-local HOVER_LIFT           = 10   -- pixels up (negative Y in Defold)
-local HOVER_DURATION       = 0.12 -- seconds
-local HOVER_SCALE_TO       = vmath.vector3(1.08, 1.08, 1)
-local HOVER_SCALE_DURATION = 0.12
-
 
 -- ─────────────────────────────────────────────
 -- Init  –  call once inside script init(self)
@@ -67,17 +62,17 @@ function M.on_hover_enter(self)
     go.animate(
         self.go_id, "position.y",
         go.PLAYBACK_ONCE_FORWARD,
-        start_y + HOVER_LIFT,
+        start_y + visual_settings.card.hover_lift,
         go.EASING_OUTQUAD,
-        HOVER_DURATION
+        visual_settings.card.hover_lift_duration
     )
 
     go.animate(
         self.go_id, "scale",
         go.PLAYBACK_ONCE_FORWARD,
-        HOVER_SCALE_TO,
+        visual_settings.card.hover_scale,
         go.EASING_OUTBACK, -- overshoot feels more "juicy"
-        HOVER_SCALE_DURATION
+        visual_settings.card.hover_scale_duration
     )
 end
 
@@ -90,17 +85,17 @@ function M.on_hover_exit(self)
     go.animate(
         self.go_id, "position.y",
         go.PLAYBACK_ONCE_FORWARD,
-        start_y - HOVER_LIFT,
+        start_y - visual_settings.card.hover_lift,
         go.EASING_OUTQUAD,
-        HOVER_DURATION
+        visual_settings.card.hover_lift_duration
     )
 
     go.animate(
         self.go_id, "scale",
         go.PLAYBACK_ONCE_FORWARD,
-        vmath.vector3(1, 1, 1),
+        visual_settings.card.base_scale,
         go.EASING_OUTQUAD,
-        HOVER_SCALE_DURATION
+        visual_settings.card.hover_scale_duration
     )
 end
 

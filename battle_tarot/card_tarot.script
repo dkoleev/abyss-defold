@@ -9,8 +9,14 @@ local camera          = require("orthographic.camera")
 
 go.property("card_id", hash(""))
 
+local states -- forward declare
+
 local function transition(self, new_state, ...)
-    self.state = new_state
+    if self.state and self.state.exit then
+        self.state.exit(self, ...)
+    end
+
+    self.state = states[new_state]
     local enter = self.state.enter
     if enter then enter(self, ...) end
 end
@@ -64,35 +70,57 @@ local function get_scale(self)
     end
 end
 
-local states = {
-    idle = {
-        enter = function(self) 
+local STATE = {
+    IDLE     = "idle",
+    HOVERING = "hovering",
+    SELECTED = "selected"
+}
+
+states = {
+    [STATE.IDLE] = {
+        enter = function(self)
             print("enter idle")
         end,
         input = function(self, action_id, action)
             if action_id == nil then -- mouse move
                 local over = is_cursor_over(self, action)
-                if over and not self.is_hovering then
-                    if not self.is_hovering then
-                        self.is_hovering = true
-                        self.base_z_pos = go.get_position().z
-                        anim_logic.on_hover_enter(self)
-                    end
-                elseif not over and self.is_hovering then
-                    if self.is_hovering then
-                        self.is_hovering = false
-                    end
-                    anim_logic.on_hover_exit(self, self.base_z_pos)
+                if over then
+                    transition(self, STATE.HOVERING)
                 end
             end
         end
     },
-    hovering = {
-        enter = function(self) end,
-        input = function(self, action_id, action) end
+    [STATE.HOVERING] = {
+        enter = function(self)
+            self.is_hovering = true
+            self.base_z_pos = go.get_position().z -- also missing
+            anim_logic.on_hover_enter(self)
+        end,
+        input = function(self, action_id, action)
+            if action_id == nil then -- mouse move
+                local over = is_cursor_over(self, action)
+                if not over then
+                    anim_logic.on_hover_exit(self, self.base_z_pos)
+                    transition(self, STATE.IDLE)
+                end
+            end
+            -- if action_id == hash("touch") and action.pressed then
+            --     -- touch/click
+            --     if is_cursor_over(self, action) then
+            --         if self.is_selected then
+            --             -- deselect(self)
+            --         else
+            --             -- select(self)
+            --         end
+            --     end
+            -- end
+        end,
+        exit = function(self)
+            self.is_hovering = false
+        end
     }
     ,
-    selected = {
+    [STATE.SELECTED] = {
         enter = function(self) end,
         input = function(self, action_id, action) end
     }
@@ -131,7 +159,7 @@ function init(self)
     flip_immediate(self)
     flip(self)
 
-    transition(self, states.idle)
+    transition(self, STATE.IDLE)
 end
 
 function update(self, dt)

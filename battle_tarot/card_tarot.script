@@ -9,6 +9,12 @@ local camera          = require("orthographic.camera")
 
 go.property("card_id", hash(""))
 
+local function transition(self, new_state, ...)
+    self.state = new_state
+    local enter = self.state.enter
+    if enter then enter(self, ...) end
+end
+
 local function is_cursor_over(self, action)
     local pos = go.get_position()
     local world = camera.screen_to_world(self.cam_id, vmath.vector3(action.screen_x, action.screen_y, 0))
@@ -58,6 +64,43 @@ local function get_scale(self)
     end
 end
 
+local states = {
+    idle = {
+        enter = function(self) 
+            print("enter idle")
+        end,
+        input = function(self, action_id, action)
+            if action_id == nil then -- mouse move
+                local over = is_cursor_over(self, action)
+                if over and not self.is_hovering then
+                    if not self.is_hovering then
+                        self.is_hovering = true
+                        self.base_z_pos = go.get_position().z
+                        anim_logic.on_hover_enter(self)
+                    end
+                elseif not over and self.is_hovering then
+                    if self.is_hovering then
+                        self.is_hovering = false
+                    end
+                    anim_logic.on_hover_exit(self, self.base_z_pos)
+                end
+            end
+        end
+    },
+    hovering = {
+        enter = function(self) end,
+        input = function(self, action_id, action) end
+    }
+    ,
+    selected = {
+        enter = function(self) end,
+        input = function(self, action_id, action) end
+    }
+}
+
+--===== PUBLIC API ==================================
+--===================================================
+
 function init(self)
     msg.post(".", MN.acquire_input_focus)
 
@@ -87,6 +130,8 @@ function init(self)
 
     flip_immediate(self)
     flip(self)
+
+    transition(self, states.idle)
 end
 
 function update(self, dt)
@@ -100,21 +145,36 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
-    if action_id == nil then -- mouse move
-        local over = is_cursor_over(self, action)
-        if over and not self.is_hovering then
-            if not self.is_hovering then
-                self.is_hovering = true
-                self.base_z_pos = go.get_position().z
-                anim_logic.on_hover_enter(self)
-            end
-        elseif not over and self.is_hovering then
-            if self.is_hovering then
-                self.is_hovering = false
-            end
-            anim_logic.on_hover_exit(self, self.base_z_pos)
-        end
+    local cur_state = self.state
+    if cur_state and cur_state.input then
+        print(cur_state)
+        cur_state.input(self, action_id, action)
     end
+
+    -- if action_id == nil then -- mouse move
+    --     local over = is_cursor_over(self, action)
+    --     if over and not self.is_hovering then
+    --         if not self.is_hovering then
+    --             self.is_hovering = true
+    --             self.base_z_pos = go.get_position().z
+    --             anim_logic.on_hover_enter(self)
+    --         end
+    --     elseif not over and self.is_hovering then
+    --         if self.is_hovering then
+    --             self.is_hovering = false
+    --         end
+    --         anim_logic.on_hover_exit(self, self.base_z_pos)
+    --     end
+    -- elseif action_id == hash("touch") and action.pressed then
+    --     -- touch/click
+    --     if is_cursor_over(self, action) then
+    --         if self.is_selected then
+    --             -- deselect(self)
+    --         else
+    --             -- select(self)
+    --         end
+    --     end
+    -- end
 end
 
 function on_message(self, message_id, message, sender)

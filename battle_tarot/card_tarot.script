@@ -9,12 +9,6 @@ local camera          = require("orthographic.camera")
 
 go.property("card_id", hash(""))
 
-local FRONT_URL = "#sprite"
-local BACK_URL  = "#back_sprite"
-
-local CARD_W    = 32 -- half-width in pixels
-local CARD_H    = 48 -- half-height in pixels
-
 local function is_cursor_over(self, action)
     local pos = go.get_position()
     local world = camera.screen_to_world(self.cam_id, vmath.vector3(action.screen_x, action.screen_y, 0))
@@ -22,16 +16,16 @@ local function is_cursor_over(self, action)
     local dx = world.x - pos.x
     local dy = world.y - pos.y
 
-    return math.abs(dx) < CARD_W and math.abs(dy) < CARD_H
+    return math.abs(dx) < visual_settings.card.width_half and math.abs(dy) < visual_settings.card.height_half
 end
 
 local function flip_immediate(self)
     if self.is_facing then
-        go.set(BACK_URL, "tint.w", 1)
-        go.set(FRONT_URL, "tint.w", 0)
+        go.set(visual_settings.card.back_sprite_url, "tint.w", 1)
+        go.set(visual_settings.card.front_sprite_url, "tint.w", 0)
     else
-        go.set(BACK_URL, "tint.w", 0)
-        go.set(FRONT_URL, "tint.w", 1)
+        go.set(visual_settings.card.back_sprite_url, "tint.w", 0)
+        go.set(visual_settings.card.front_sprite_url, "tint.w", 1)
     end
 
     self.is_facing = not self.is_facing
@@ -86,7 +80,7 @@ function init(self)
 
     go.set_scale(visual_settings.card.base_scale)
 
-    msg.post(FRONT_URL, "play_animation", { id = hash(self.card_config.sprite) })
+    msg.post(visual_settings.card.front_sprite_url, "play_animation", { id = hash(self.card_config.sprite) })
 
     idle_anim_logic.init(self, self.card_config.index)
     anim_logic.init(self)
@@ -96,8 +90,6 @@ function init(self)
 end
 
 function update(self, dt)
-
-    print(go.get_position())
     anim_logic.update(self, dt)
     idle_anim_logic.update(self, dt)
 

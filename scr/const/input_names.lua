@@ -1,3 +1,4 @@
 return {
-    STOP_REEL = hash("stop_reel")
+    STOP_REEL = hash("stop_reel"),
+    TOUCH     = hash("touch")
 }

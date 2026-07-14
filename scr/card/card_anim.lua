@@ -53,12 +53,12 @@ end
 -- hovering  –  call to trigger the pop animation
 -- ─────────────────────────────────────────────
 
-function M.on_hover_enter(self)
+function M.on_hover_enter(self, on_complete)
     go.cancel_animations(self.go_id, "position.y")
     go.cancel_animations(self.go_id, "scale")
 
     local cur_pos = go.get_position(self.go_id)
-    go.set_position(vmath.vector3(cur_pos.x, cur_pos.y, visual_settings.card.hover_z_position))
+    -- go.set_position(vmath.vector3(cur_pos.x, cur_pos.y, visual_settings.card.hover_z_position))
     
     go.animate(
         self.go_id, "position.y",
@@ -73,7 +73,9 @@ function M.on_hover_enter(self)
         go.PLAYBACK_ONCE_FORWARD,
         visual_settings.card.hover_scale,
         go.EASING_OUTBACK, -- overshoot feels more "juicy"
-        visual_settings.card.hover_scale_duration
+        visual_settings.card.hover_scale_duration,
+        0,
+        on_complete
     )
 end
 
@@ -215,7 +217,9 @@ function M.get_transform(self, base_sx, base_sy, base_rot)
 
     local juice = self.anim.juice_scale
     local sx    = (base_sx + juice) * self.anim.flip_scale_x
+    -- local sx    = (base_sx) * self.anim.flip_scale_x
     local sy    = base_sy + juice
+    -- local sy    = base_sy
     local rz    = base_rot + self.anim.juice_rot
 
     return sx, sy, rz

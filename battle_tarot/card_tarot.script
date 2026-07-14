@@ -6,8 +6,13 @@ local idle_anim_logic = require("scr.card.card_idle_anim")
 local anim_logic      = require("scr.card.card_anim")
 local settings        = require("scr.settings.game_settings")
 local camera          = require("orthographic.camera")
+local input_names     = require("scr.const.input_names")
 
 go.property("card_id", hash(""))
+
+-- How long (seconds) a press must be held before it becomes HOLDING.
+-- Release before this threshold → click → SELECTED.
+local HOLD_THRESHOLD = 0.20
 
 local states -- forward declare
 
@@ -63,21 +68,19 @@ local function flip(self)
 end
 
 local function get_scale(self)
-    if self.is_hovering then
-        return visual_settings.card.hover_scale
-    else
-        return visual_settings.card.base_scale
-    end
+    return self.state.card_scale
 end
 
 local STATE = {
     IDLE     = "idle",
     HOVERING = "hovering",
+    HOLDING  = "holding",
     SELECTED = "selected"
 }
 
 states = {
     [STATE.IDLE] = {
+        card_scale = visual_settings.card.base_scale,
         enter = function(self)
             print("enter idle")
         end,
@@ -91,38 +94,107 @@ states = {
         end
     },
     [STATE.HOVERING] = {
+        card_scale = visual_settings.card.hover_scale,
         enter = function(self)
-            self.is_hovering = true
-            self.base_z_pos = go.get_position().z -- also missing
-            anim_logic.on_hover_enter(self)
+            self.base_z_pos = go.get_position().z
+            idle_anim_logic.pause(self)
+            anim_logic.juice_up(self)
+            anim_logic.on_hover_enter(self, function()
+                idle_anim_logic.resume(self)
+            end)
+            -- Reset press timer whenever we enter HOVERING.
+            self.press_timer = nil
+        end,
+        update = function(self, dt)
+            if self.press_timer ~= nil then
+                self.press_timer = self.press_timer + dt
+                if self.press_timer > visual_settings.card.holding_threshold then
+                    transition(self, STATE.HOLDING)
+                end
+            end
         end,
         input = function(self, action_id, action)
             if action_id == nil then -- mouse move
                 local over = is_cursor_over(self, action)
                 if not over then
-                    anim_logic.on_hover_exit(self, self.base_z_pos)
+                    self.press_timer = nil
                     transition(self, STATE.IDLE)
                 end
             end
-            -- if action_id == hash("touch") and action.pressed then
-            --     -- touch/click
-            --     if is_cursor_over(self, action) then
-            --         if self.is_selected then
-            --             -- deselect(self)
-            --         else
-            --             -- select(self)
-            --         end
-            --     end
-            -- end
+
+            if action_id == input_names.TOUCH then
+                if action.pressed and is_cursor_over(self, action) then
+                    self.press_timer = 0
+                elseif action.released then
+                    if self.press_timer ~= nil and self.press_timer < visual_settings.card.holding_threshold then
+                        -- Quick release -> click.
+                        self.press_timer = nil
+                        if self.is_selected then
+                            transition(self, STATE.IDLE)
+                        else
+                            transition(self, STATE.SELECTED)
+                        end
+                    else
+                        -- Released after we already transitioned to HOLDING
+                        -- press_timer is nil here because HOLDING.enter cleared it
+                        -- Nothing to do - HOLDING.input handles its own release.
+                        self.press_timer = nil
+                    end
+                end
+            end
         end,
         exit = function(self)
-            self.is_hovering = false
+            self.press_timer = nil
+            anim_logic.on_hover_exit(self, self.base_z_pos)
+            idle_anim_logic.resume(self)
         end
-    }
-    ,
+    },
+    -- ─────────────────────────────────────────────────────────────
+    -- HOLDING: button held past HOLD_THRESHOLD.
+    -- Future use: show card detail / zoom.
+    -- Release → return to IDLE.
+    -- ─────────────────────────────────────────────────────────────
+    [STATE.HOLDING] = {
+        card_scale = visual_settings.card.holding_scale,
+        enter = function(self)
+            self.press_timer = nil -- no longer needed
+            print("enter holding — show card detail here")
+            -- TODO: open card detail / zoom panel
+        end,
+        input = function(self, action_id, action)
+            if action_id == input_names.TOUCH and action.released then
+                transition(self, STATE.IDLE)
+            end
+        end,
+        exit = function(self)
+            print("exit holding — close card detail here")
+            -- TODO: close card detail / zoom panel
+        end
+    },
+    -- ─────────────────────────────────────────────────────────────
+    -- SELECTED: card was clicked (quick press + release).
+    -- Another click anywhere on the card → deselect back to IDLE.
+    -- You can also broadcast a deselect message from a parent script.
+    -- ─────────────────────────────────────────────────────────────
     [STATE.SELECTED] = {
-        enter = function(self) end,
-        input = function(self, action_id, action) end
+        card_scale = visual_settings.card.base_scale,
+        enter = function(self)
+            self.is_selected = true
+            print("enter selected")
+            -- TODO: raise card slightly, show selection glow, notify parent
+        end,
+        input = function(self, action_id, action)
+            if action_id == input_names.TOUCH and action.pressed then
+                if is_cursor_over(self, action) then
+                    -- Second click on this card → deselect.
+                    transition(self, STATE.IDLE)
+                end
+            end
+        end,
+        exit = function(self)
+            self.is_selected = false
+            print("exit selected")
+        end
     }
 }
 
@@ -141,10 +213,10 @@ function init(self)
     end
 
     self.is_facing = true
+    self.is_selected = false
+    self.press_timer = nil
     self.base_rot = 0 -- radians; change for tilted/hand cards
     self.go_id = go.get_id()
-    self.is_hovering = false
-    self.cam_id = hash("/battle_camera")
     self.cam_id = hash("/battle_camera")
     self.screen_h = tonumber(sys.get_config_int("display.height"))
     self.base_z_pos = 0
@@ -163,46 +235,34 @@ function init(self)
 end
 
 function update(self, dt)
+    -- Delegate per-state update if the state defines one.
+    -- (Currently only HOVERING uses this for the press timer.)
+    if self.state and self.state.update then
+        self.state.update(self, dt)
+    end
+
     anim_logic.update(self, dt)
     idle_anim_logic.update(self, dt)
 
     local scale = get_scale(self)
     local sx, sy, rz = anim_logic.get_transform(self, scale.x, scale.y, self.base_rot)
 
-    idle_anim_logic.apply(self, rz, sx, sy)
+    -- idle_anim_logic.apply already checks self.idle.active internally,
+    -- but go.animate owns scale while hovering — skip apply entirely
+    if self.idle and self.idle.active then
+        idle_anim_logic.apply(self, rz, sx, sy)
+    else
+        -- juice_up still needs to be applied manually while hovering
+        go.set(self.go_id, "euler.z", rz)
+        -- scale.x / scale.y are owned by go.animate here — don't touch them
+    end
 end
 
 function on_input(self, action_id, action)
     local cur_state = self.state
     if cur_state and cur_state.input then
-        print(cur_state)
         cur_state.input(self, action_id, action)
     end
-
-    -- if action_id == nil then -- mouse move
-    --     local over = is_cursor_over(self, action)
-    --     if over and not self.is_hovering then
-    --         if not self.is_hovering then
-    --             self.is_hovering = true
-    --             self.base_z_pos = go.get_position().z
-    --             anim_logic.on_hover_enter(self)
-    --         end
-    --     elseif not over and self.is_hovering then
-    --         if self.is_hovering then
-    --             self.is_hovering = false
-    --         end
-    --         anim_logic.on_hover_exit(self, self.base_z_pos)
-    --     end
-    -- elseif action_id == hash("touch") and action.pressed then
-    --     -- touch/click
-    --     if is_cursor_over(self, action) then
-    --         if self.is_selected then
-    --             -- deselect(self)
-    --         else
-    --             -- select(self)
-    --         end
-    --     end
-    -- end
 end
 
 function on_message(self, message_id, message, sender)
@@ -213,5 +273,13 @@ function on_message(self, message_id, message, sender)
     if message_id == hash("juice_up") then
         -- optional custom scale/rot from message data
         anim_logic.juice_up(self, message.scale, message.rot)
+    end
+
+    -- Broadcast this from a parent to deselect all cards at once:
+    --   msg.post("/card_*", "deselect")
+    if message_id == hash("deselect") then
+        if self.state == states[STATE.SELECTED] then
+            transition(self, STATE.IDLE)
+        end
     end
 end

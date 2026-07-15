@@ -14,18 +14,18 @@
 ---   card_anim.juice_up(self, 0.11, 0.16)   -- scale_amount, rot_amount
 ---   card_anim.flip(self)                    -- toggles front/back
 
-local tweener              = require("tweener.tweener")
-local visual_settings      = require("scr.settings.visual_settings")
+local tweener           = require("tweener.tweener")
+local visual_settings   = require("scr.settings.visual_settings")
 
-local M                    = {}
+local M                 = {}
 
 -- ─────────────────────────────────────────────
 -- Constants
 -- ─────────────────────────────────────────────
 
-local JUICE_SCALE_DECAY    = 8.0  -- how fast the scale bump springs back
-local JUICE_ROT_DECAY      = 6.0  -- how fast the rotation springs back
-local FLIP_SPEED           = 6.0  -- X-scale pinch speed (units/sec)
+local JUICE_SCALE_DECAY = 8.0    -- how fast the scale bump springs back
+local JUICE_ROT_DECAY   = 6.0    -- how fast the rotation springs back
+local FLIP_SPEED        = 6.0    -- X-scale pinch speed (units/sec)
 
 -- ─────────────────────────────────────────────
 -- Init  –  call once inside script init(self)
@@ -58,15 +58,15 @@ function M.on_hover_enter(self, on_complete)
     go.cancel_animations(self.go_id, "scale")
 
     local cur_pos = go.get_position(self.go_id)
-    -- go.set_position(vmath.vector3(cur_pos.x, cur_pos.y, visual_settings.card.hover_z_position))
-    
-    go.animate(
-        self.go_id, "position.y",
-        go.PLAYBACK_ONCE_FORWARD,
-        cur_pos.y + visual_settings.card.hover_lift,
-        go.EASING_OUTQUAD,
-        visual_settings.card.hover_lift_duration
-    )
+    -- go.set_position(vmath.vector3(cur_pos.x, cur_pos.y, visual_settings.card.hover_position_z))
+
+    -- go.animate(
+    --     self.go_id, "position.y",
+    --     go.PLAYBACK_ONCE_FORWARD,
+    --     cur_pos.y + visual_settings.card.hover_lift,
+    --     go.EASING_OUTQUAD,
+    --     visual_settings.card.hover_lift_duration
+    -- )
 
     go.animate(
         self.go_id, "scale",
@@ -87,13 +87,13 @@ function M.on_hover_exit(self, base_z_pos)
 
     go.set_position(vmath.vector3(start_pos.x, start_pos.y, base_z_pos))
 
-    go.animate(
-        self.go_id, "position.y",
-        go.PLAYBACK_ONCE_FORWARD,
-        start_pos.y - visual_settings.card.hover_lift,
-        go.EASING_OUTQUAD,
-        visual_settings.card.hover_lift_duration
-    )
+    -- go.animate(
+    --     self.go_id, "position.y",
+    --     go.PLAYBACK_ONCE_FORWARD,
+    --     start_pos.y - visual_settings.card.hover_lift,
+    --     go.EASING_OUTQUAD,
+    --     visual_settings.card.hover_lift_duration
+    -- )
 
     go.animate(
         self.go_id, "scale",
@@ -102,6 +102,60 @@ function M.on_hover_exit(self, base_z_pos)
         go.EASING_OUTQUAD,
         visual_settings.card.hover_scale_duration
     )
+end
+
+-- ─────────────────────────────────────────────
+-- select  –  call to trigger the pop animation
+-- ─────────────────────────────────────────────
+
+function M.select(self)
+    go.cancel_animations(self.go_id, "position.y")
+    go.cancel_animations(self.go_id, "scale")
+
+    local cur_pos = go.get_position(self.go_id)
+    -- go.set_position(vmath.vector3(cur_pos.x, cur_pos.y, visual_settings.card.select_position_z))
+
+    go.animate(
+        self.go_id, "position.y",
+        go.PLAYBACK_ONCE_FORWARD,
+        cur_pos.y + visual_settings.card.select_lift,
+        go.EASING_OUTQUAD,
+        visual_settings.card.select_lift_duration
+    )
+
+    -- go.animate(
+    --     self.go_id, "scale",
+    --     go.PLAYBACK_ONCE_FORWARD,
+    --     visual_settings.card.select_scale,
+    --     go.EASING_OUTBACK, -- overshoot feels more "juicy"
+    --     visual_settings.card.select_scale_duration)
+end
+
+function M.deselect(self, target_pos_z, on_complete)
+    go.cancel_animations(self.go_id, "position.y")
+    go.cancel_animations(self.go_id, "scale")
+
+    local start_pos = go.get_position(self.go_id)
+
+    go.set_position(vmath.vector3(start_pos.x, start_pos.y, target_pos_z))
+
+    go.animate(
+        self.go_id, "position.y",
+        go.PLAYBACK_ONCE_FORWARD,
+        start_pos.y - visual_settings.card.select_lift,
+        go.EASING_OUTQUAD,
+        visual_settings.card.select_lift_duration
+    )
+
+    -- go.animate(
+    --     self.go_id, "scale",
+    --     go.PLAYBACK_ONCE_FORWARD,
+    --     visual_settings.card.base_scale,
+    --     go.EASING_OUTQUAD,
+    --     visual_settings.card.select_scale_duration,
+    --     0,
+    --     on_complete
+    -- )
 end
 
 -- ─────────────────────────────────────────────

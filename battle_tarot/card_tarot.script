@@ -177,17 +177,20 @@ states = {
     -- You can also broadcast a deselect message from a parent script.
     -- ─────────────────────────────────────────────────────────────
     [STATE.SELECTED] = {
-        card_scale = visual_settings.card.base_scale,
+        card_scale = visual_settings.card.select_scale,
         enter = function(self)
             self.is_selected = true
+            self.base_z_pos = go.get_position().z
             print("enter selected")
-            -- TODO: raise card slightly, show selection glow, notify parent
+            anim_logic.select(self)
         end,
         input = function(self, action_id, action)
             if action_id == input_names.TOUCH and action.pressed then
                 if is_cursor_over(self, action) then
-                    -- Second click on this card → deselect.
-                    transition(self, STATE.IDLE)
+                    anim_logic.deselect(self, self.base_z_pos, function()
+                        -- Second click on this card → deselect.
+                        transition(self, STATE.HOVERING)
+                    end)
                 end
             end
         end,

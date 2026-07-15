@@ -1,6 +1,6 @@
 components {
   id: "card_tarot"
-  component: "/battle_tarot/card_tarot.script"
+  component: "/battle_tarot/card_tarot_opt2.script"
 }
 embedded_components {
   id: "sprite"

@@ -1,0 +1,211 @@
+local movable  = require("scr.card.card_move")
+local MN       = require("scr.const.message_names")
+local settings = require("scr.settings.game_settings")
+
+go.property("card_id", hash(""))
+
+--[[
+  States:
+    IDLE      - card is sitting in the hand fan, idle sway active
+    HOVERING  - cursor is over the card, card lifted
+    HOLDING   - mouse button held down on the card
+    SELECTED  - card has been committed to "selected" pile
+    DISCARDING- flying off screen
+]]
+
+local STATE = {
+	IDLE       = "IDLE",
+	HOVERING   = "HOVERING",
+	HOLDING    = "HOLDING",
+	SELECTED   = "SELECTED",
+	DISCARDING = "DISCARDING",
+}
+
+function init(self)
+	msg.post(".", MN.acquire_input_focus)
+
+	-- Find the matching card data using the passed hash
+	for key, card in pairs(settings.tarot) do
+		if hash(card.id) == self.card_id then
+			self.card_config = card
+			break
+		end
+	end
+
+	pprint(self.card_config)
+
+	-- The initial position comes from factory spawn properties (or defaults here)
+	local pos       = go.get_position()
+	self.base_x     = pos.x -- hand fan x — set by the hand layout system
+	self.base_y     = pos.y -- hand fan y
+	self.base_z     = pos.z
+	self.base_rot   = 0  -- hand fan rotation (set by hand layout)
+	self.is_hovered = false
+	self.is_held    = false
+	self.go_id      = go.get_id()
+
+    self.move = movable.create(self.go_id, pos.x, pos.y, pos.z, self.base_rot, self.card_config.index)
+
+	self.state      = STATE.IDLE
+end
+
+function update(self, dt)
+	-- Drive the easing loop every frame.
+	-- card_move.update does nothing if stationary (cheap path).
+	movable.update(self.move, dt)
+end
+
+function final(self)
+	msg.post(".", MN.release_input_focus)
+end
+
+-- card.script
+-- -- Now only depends on card_move — no separate idle_anim import.
+
+-- local card_move = require("cards.card_move")
+
+-- local HOVER_LIFT    = 22
+-- local HOLD_LIFT     = 30
+-- local SELECTED_LIFT = 55
+-- local HOVER_SCALE   = 1.08
+-- local HOLD_SCALE    = 1.05
+-- local BASE_SCALE    = 1.0
+
+-- local POS_STATE = { IDLE = "IDLE", SELECTED = "SELECTED", DISCARDING = "DISCARDING" }
+
+-- local function _target_y(self)
+--     local anchor = (self.pos_state == POS_STATE.SELECTED)
+--         and (self.base_y + SELECTED_LIFT) or self.base_y
+--     if     self.is_held    then return anchor + HOLD_LIFT
+--     elseif self.is_hovered then return anchor + HOVER_LIFT
+--     else                        return anchor end
+-- end
+
+-- local function _target_scale(self)
+--     if self.is_held    then return HOLD_SCALE  end
+--     if self.is_hovered then return HOVER_SCALE end
+--     return BASE_SCALE
+-- end
+
+-- local function _apply_targets(self)
+--     card_move.move_to(self.move, self.base_x, _target_y(self))
+--     card_move.scale_to(self.move, _target_scale(self))
+-- end
+
+-- -- ─────────────────────────────────────────────────────────────────────────────
+
+-- function init(self)
+--     local card_id = self.card_id or 1   -- set via go.property or factory msg
+
+--     local pos     = go.get_position()
+--     self.base_x   = pos.x
+--     self.base_y   = pos.y
+--     self.base_rot = 0
+
+--     self.pos_state  = POS_STATE.IDLE
+--     self.is_hovered = false
+--     self.is_held    = false
+
+--     -- card_id now passed into create() so idle state is initialised there
+--     self.move = card_move.create(msg.url(), pos.x, pos.y, pos.z, self.base_rot, card_id)
+
+--     msg.post(".", "acquire_input_focus")
+-- end
+
+-- function update(self, dt)
+--     card_move.update(self.move, dt)
+-- end
+
+-- -- ─────────────────────────────────────────────────────────────────────────────
+
+-- function on_message(self, message_id, message, sender)
+--     if self.pos_state == POS_STATE.DISCARDING then return end
+
+--     if message_id == hash("hover_enter") then
+--         if not self.is_hovered then
+--             self.is_hovered = true
+--             card_move.on_hover_enter(self.move, HOVER_LIFT, HOVER_SCALE)
+--         end
+
+--     elseif message_id == hash("hover_exit") then
+--         if self.is_hovered then
+--             self.is_hovered = false
+--             if not self.is_held then
+--                 if self.pos_state == POS_STATE.IDLE then
+--                     card_move.on_hover_exit(self.move, self.base_y, BASE_SCALE)
+--                 else
+--                     -- SELECTED: stay paused, just adjust target position
+--                     card_move.idle_pause(self.move)
+--                     _apply_targets(self)
+--                 end
+--             end
+--         end
+
+--     elseif message_id == hash("mouse_down") then
+--         if not self.is_held then
+--             self.is_held = true
+--             card_move.on_hold_start(self.move, HOLD_LIFT)
+--         end
+
+--     elseif message_id == hash("mouse_up") then
+--         if self.is_held then
+--             local was_hovered = self.is_hovered
+--             self.is_held = false
+--             if was_hovered then
+--                 if self.pos_state == POS_STATE.IDLE then
+--                     self:_select()
+--                 else
+--                     self:_deselect()
+--                 end
+--             else
+--                 _apply_targets(self)
+--                 if not self.is_hovered and self.pos_state == POS_STATE.IDLE then
+--                     card_move.idle_resume(self.move)
+--                 end
+--             end
+--         end
+
+--     elseif message_id == hash("select")  then self:_select()
+--     elseif message_id == hash("deselect") then self:_deselect()
+
+--     elseif message_id == hash("discard") then
+--         self:_discard(message.target_x, message.target_y)
+
+--     elseif message_id == hash("hard_move") then
+--         self.base_x   = message.x
+--         self.base_y   = message.y
+--         self.base_rot = message.rot or 0
+--         card_move.hard_set(self.move, message.x, _target_y(self), message.z)
+--         card_move.hard_set_rot(self.move, self.base_rot)
+--     end
+-- end
+
+-- -- ─────────────────────────────────────────────────────────────────────────────
+
+-- function self:_select()
+--     self.pos_state = POS_STATE.SELECTED
+--     card_move.on_select(self.move, self.base_y + SELECTED_LIFT, 0)
+--     msg.post("/hand_controller", "card_selected", { card_url = msg.url() })
+-- end
+
+-- function self:_deselect()
+--     self.pos_state = POS_STATE.IDLE
+--     card_move.on_deselect(self.move, self.base_y, self.base_rot)
+--     msg.post("/hand_controller", "card_deselected", { card_url = msg.url() })
+-- end
+
+-- function self:_discard(target_x, target_y)
+--     self.pos_state  = POS_STATE.DISCARDING
+--     self.is_hovered = false
+--     self.is_held    = false
+--     card_move.cancel_all_animations(self.move)
+--     local rand_rot = math.random() * 60 - 30
+--     card_move.on_discard(self.move, target_x, target_y, rand_rot, function()
+--         msg.post("/hand_controller", "card_discarded", { card_url = msg.url() })
+--         go.delete()
+--     end)
+-- end
+
+-- function final(self)
+--     msg.post(".", "release_input_focus")
+-- end

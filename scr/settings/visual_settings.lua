@@ -18,7 +18,13 @@ M.card = {
     hover_lift           = 0, -- pixels up
     hover_lift_duration  = 0.0,
     hover_scale_duration = 0.1,
-    hover_z_position     = 0.1,
+    hover_position_z     = 0.1,
+    select_scale          = vmath.vector3(1.16),
+    select_lift           = 10, -- pixels up
+    select_lift_duration  = 0.1,
+    select_scale_duration = 0.1,
+    select_position_z     = 0.1,
+    
     front_sprite_url     = "#sprite",
     back_sprite_url      = "#back_sprite"
 }

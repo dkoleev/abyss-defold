@@ -1,6 +1,8 @@
-local movable  = require("scr.card.card_move")
-local MN       = require("scr.const.message_names")
-local settings = require("scr.settings.game_settings")
+local movable         = require("scr.card.card_move")
+local MN              = require("scr.const.message_names")
+local settings        = require("scr.settings.game_settings")
+local visual_settings = require("scr.settings.visual_settings")
+local tweener         = require("tweener.tweener")
 
 go.property("card_id", hash(""))
 
@@ -21,6 +23,38 @@ local STATE = {
 	DISCARDING = "DISCARDING",
 }
 
+local function flip_immediate(self)
+	if self.is_facing then
+		go.set(visual_settings.card.back_sprite_url, "tint.w", 1)
+		go.set(visual_settings.card.front_sprite_url, "tint.w", 0)
+	else
+		go.set(visual_settings.card.back_sprite_url, "tint.w", 0)
+		go.set(visual_settings.card.front_sprite_url, "tint.w", 1)
+	end
+
+	self.is_facing = not self.is_facing
+end
+
+-- flip via tweener instead of manual update
+local function flip(self)
+	-- if self.anim.flip_state ~= "idle" then return end
+	-- self.anim.flip_state = "flipping"
+
+	local duration_half = visual_settings.card.flip_duration / 2
+
+	tweener.tween(go.EASING_INQUAD, 1, 0, duration_half, function(value, is_end)
+		go.set(go.get_id(), "scale.x", value)
+
+		if is_end then
+			flip_immediate(self)
+			tweener.tween(go.EASING_OUTQUAD, 0, 1, duration_half, function(value, is_end)
+				go.set(go.get_id(), "scale.x", value)
+			end)
+		end
+	end)
+end
+
+
 function init(self)
 	msg.post(".", MN.acquire_input_focus)
 
@@ -32,10 +66,9 @@ function init(self)
 		end
 	end
 
-	pprint(self.card_config)
-
 	-- The initial position comes from factory spawn properties (or defaults here)
 	local pos       = go.get_position()
+	self.is_facing  = false
 	self.base_x     = pos.x -- hand fan x — set by the hand layout system
 	self.base_y     = pos.y -- hand fan y
 	self.base_z     = pos.z
@@ -44,9 +77,14 @@ function init(self)
 	self.is_held    = false
 	self.go_id      = go.get_id()
 
-    self.move = movable.create(self.go_id, pos.x, pos.y, pos.z, self.base_rot, self.card_config.index)
+	msg.post(visual_settings.card.front_sprite_url, "play_animation",
+		{ id = hash(self.card_config.sprite) })
 
-	self.state      = STATE.IDLE
+	self.move  = movable.create(self.go_id, pos.x, pos.y, pos.z, self.base_rot, self.card_config.index)
+
+	self.state = STATE.IDLE
+
+    flip(self)
 end
 
 function update(self, dt)
@@ -56,12 +94,11 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-    if message_id == MN.change_rotation then
-        self.base_rot = message.rotation
+	if message_id == MN.change_rotation then
+		self.base_rot = message.rotation
 		movable.hard_set_rot(self.move, self.base_rot)
-    end
+	end
 end
-
 
 function final(self)
 	msg.post(".", MN.release_input_focus)

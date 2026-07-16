@@ -74,6 +74,8 @@ M.player_damage_mult_changed  = hash("player_damage_mult_changed")
 M.player_final_damage_changed = hash("player_final_damage_mult_changed")
 M.set_progress                = hash("set_progress")
 M.change_rotation             = hash("change_rotation")
+M.hover_enter                 = hash("hover_enter")
+M.hover_exit                  = hash("hover_exit")
 
 -- ─── Slots ────────────────────────────────────────────────────────────────────
 

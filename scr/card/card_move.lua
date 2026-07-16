@@ -93,7 +93,7 @@ function M.create(go_url, x, y, z, rot_deg, card_id)
         juice      = nil,
         timer      = 0,
         stationary = true,
-        -- Idle orbit state (same fields as former card_idle_anim.self.idle)
+        -- Idle orbit state
         idle       = {
             speed  = BASE_SPEED + (card_id / SPEED_ID_DIVISOR) % 1,
             phase  = card_id / PHASE_ID_DIVISOR,

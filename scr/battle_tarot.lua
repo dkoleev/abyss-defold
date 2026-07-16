@@ -55,7 +55,7 @@ local function refresh_spread(self)
             target_pos, go.EASING_OUTQUAD, tween_duration)
         go.animate(self.card_urls[i], "rotation", go.PLAYBACK_ONCE_FORWARD,
             target_rot, go.EASING_OUTQUAD, tween_duration)
-        msg.post(self.card_urls[i], MN.change_rotation, { rotation = offset.rotation })
+        msg.post(self.card_urls[i], MN.change_rotation, { rotation = offset.rotation, position = target_pos })
     end
 end
 

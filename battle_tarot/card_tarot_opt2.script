@@ -55,6 +55,14 @@ function update(self, dt)
 	movable.update(self.move, dt)
 end
 
+function on_message(self, message_id, message, sender)
+    if message_id == MN.change_rotation then
+        self.base_rot = message.rotation
+		movable.hard_set_rot(self.move, self.base_rot)
+    end
+end
+
+
 function final(self)
 	msg.post(".", MN.release_input_focus)
 end

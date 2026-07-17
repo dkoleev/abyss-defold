@@ -170,9 +170,12 @@ function on_message(self, message_id, message, sender)
 
 	if message_id == MN.change_rotation then
 		self.base_rot = message.rotation
-		self.pos      = message.position
+		self.base_pos = message.position
+		self.base_x = message.position.x
+		self.base_y = message.position.y
+		self.base_z = message.position.z
 		movable.hard_set_rot(self.move, self.base_rot)
-		movable.hard_set(self.move, self.pos.x, self.pos.y, self.pos.z)
+		movable.hard_set(self.move, self.base_x, self.base_y, self.base_z)
 	end
 
 	-- if message_id == MN.hover_enter then

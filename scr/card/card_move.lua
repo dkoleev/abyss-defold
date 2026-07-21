@@ -281,40 +281,44 @@ end
 -- ─────────────────────────────────────────────────────────────────────────────
 
 function M.on_hover_enter(state, lift_y, scale_mul)
-    M.idle_pause(state)
+    -- M.idle_pause(state)
     state.T.y  = state.T.y + (lift_y or 22)
     state.T.sx = scale_mul or 1.08
     M.juice(state, 0.12, 3.0)
 end
 
 function M.on_hover_exit(state, base_y, base_sx)
-    M.idle_resume(state)
+    -- M.idle_resume(state)
     state.T.y  = base_y
     state.T.sx = base_sx or 1.0
 end
 
-function M.on_hold_start(state, lift_y)
-    M.idle_pause(state)
+function M.on_hold_start(state, lift_y, pos_z)
+    -- M.idle_pause(state)
     state.T.y  = state.T.y + (lift_y or 30)
+    state.VT.z = pos_z
+    state.T.z  = pos_z
     state.T.sx = 1.05
     M.juice(state, 0.08, 2.0)
 end
 
-function M.on_hold_end(state, base_y)
-    M.idle_resume(state)
+function M.on_hold_end(state, base_y, base_z)
+    -- M.idle_resume(state)
     state.T.y  = base_y
+    state.VT.z = base_z
+    state.T.z  = base_z
     state.T.sx = 1.08
 end
 
 function M.on_select(state, selected_y, rot_deg)
-    M.idle_pause(state)
+    -- M.idle_pause(state)
     state.T.y = selected_y
     state.T.r = rot_deg or 0
     M.juice(state, 0.30, 5.0)
 end
 
 function M.on_deselect(state, base_y, base_rot)
-    M.idle_resume(state)
+    -- M.idle_resume(state)
     state.T.y = base_y
     state.T.r = base_rot or 0
     M.juice(state, 0.10, 2.0)

@@ -16,6 +16,13 @@ function M.new(url, config_id)
     self.values    = config.values
     self.state     = {}
 
+    -- Why not just copy values to state when create and work only with state?
+    -- if config and config.values then
+    --     for k, v in pairs(config.values) do
+    --         self.state.values[k] = v
+    --     end
+    -- end
+
     -- Create a brand new table for runtime state
     -- if config and config.values then
     --     for k, v in pairs(config.values) do

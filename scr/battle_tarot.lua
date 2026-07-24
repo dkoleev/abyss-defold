@@ -5,6 +5,7 @@ local deck_prototype = require("scr.deck")
 local global_urls    = require("scr.const.global_urls")
 local spread_utils   = require("scr.utils.spread_utils")
 local MN             = require("scr.const.message_names")
+local card_prototype = require("scr.card_tarot")
 
 local M              = {}
 M.__index            = M
@@ -51,11 +52,12 @@ local function refresh_spread(self)
 
         local target_rot = vmath.quat_rotation_z(math.rad(offset.rotation))
 
-        go.animate(self.card_urls[i], "position", go.PLAYBACK_ONCE_FORWARD,
+        pprint(card)
+        go.animate(card.url, "position", go.PLAYBACK_ONCE_FORWARD,
             target_pos, go.EASING_OUTQUAD, tween_duration)
-        go.animate(self.card_urls[i], "rotation", go.PLAYBACK_ONCE_FORWARD,
+        go.animate(card.url, "rotation", go.PLAYBACK_ONCE_FORWARD,
             target_rot, go.EASING_OUTQUAD, tween_duration)
-        msg.post(self.card_urls[i], MN.change_rotation, { rotation = offset.rotation, position = target_pos })
+        msg.post(card.url, MN.change_rotation, { rotation = offset.rotation, position = target_pos })
     end
 end
 
@@ -99,17 +101,16 @@ end
 handlers[STATES.FILL_SPREAD] = function(self)
     local spread_size = settings.battle.spread_default_size
     for i = 1, spread_size do
-        local card = self.deck:draw_card()
-        self.spread[#self.spread + 1] = card
+        local card_config = self.deck:draw_card()
         local pos = go.get_position(global_urls.spread_center_point())
-        -- local props = { initial_animation = hash(card.sprite) }
-        local props = { card_id = hash(card.id) }
+        local props = { card_id = hash(card_config.id) }
         local card_url = factory.create(settings.battle.tarot_card_factory_url, pos, nil, props)
-        --TODO: remove and hole card go in spread instead
-        self.card_urls[#self.card_urls + 1] = card_url
+        local card_model = card_prototype.new(card_url, card_config.id)
 
-        refresh_spread(self)
+        self.spread[#self.spread + 1] = card_model
     end
+
+    refresh_spread(self)
 
     transition(self, STATES.SELECT_CARDS)
 end
@@ -134,7 +135,6 @@ function M.new()
         deck_url       = nil,
         spread         = {},                   -- current cards for choice
         selected_cards = {},
-        card_urls      = {}
     }, M)
 
     return self
